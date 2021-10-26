@@ -7,45 +7,33 @@ from django.dispatch import receiver
 
 
 class MyAccountManager(BaseUserManager):
-	def create_user(self, email, username, password=None):
+	def create_user(self, email, username, password=None , fname = None , lname = None):
 		if not email:
 			raise ValueError('Users must have an email address')
 		if not username:
 			raise ValueError('Users must have a username')
 
-
 		user = self.model(
 			email=self.normalize_email(email),
 			username=username,
 		)
-
+		user.firstname = fname; 
+		user.lastname= lname; 
 		user.set_password(password)
+		
 		user.save(using=self._db)
 		return user
 
 
-	# def create_writer(self, email, username, password): 
-
-	# 	user = self.create_user(
-	# 		email=self.normalize_email(email),
-	# 		password=password,
-	# 		username=username,
-	# 	)
-	# 	user.is_admin = True
-		
-	# 	user.is_writer = True
-	# 	user.save(using=self._db)
-	# 	return user
-
-
-	def create_superuser(self, email, username, password):
+def create_superuser(self, email, username, password):
 		user = self.create_user(
 			email=self.normalize_email(email),
 			password=password,
 			username=username,
+			
 		)
 		user.is_admin = True
-		#user.is_staff = True
+		user.is_staff = True
 		user.is_superuser = True
 		user.save(using=self._db)
 		return user
@@ -58,13 +46,18 @@ class Account(AbstractBaseUser):
 	last_login				= models.DateTimeField(verbose_name='last login', auto_now=True)
 	is_admin				= models.BooleanField(default=False)
 	is_active				= models.BooleanField(default=True)
+	is_staff				= models.BooleanField(default=False)
 	is_writer				= models.BooleanField(default=False)
 	is_superuser			= models.BooleanField(default=False)
+	firstname 				= models.CharField(max_length=40 , default = None)
+	lastname 				= models.CharField(max_length=40 , default = None)
+	
+
+
 	
 
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = ['username']
-
 	objects = MyAccountManager()
 
 	def __str__(self):

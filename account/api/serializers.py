@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from account.models import Account
-
+from django.core.serializers.json import DjangoJSONEncoder 
 # User Serializer
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Account
-        fields = ('id', 'username', 'email') 
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Account
+#         fields = ('id', 'username', 'email') 
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -13,7 +13,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 	password2 	= serializers.CharField(style={'input_type': 'password'}, write_only=True)
 	class Meta:
 		model = Account
-		fields = ['email', 'username', 'password', 'password2']
+		fields = ['firstname' , 'lastname','email', 'username', 'password', 'password2']
 		extra_kwargs = {
 				'password': {'write_only': True},
 		}
@@ -21,7 +21,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 	
 	def create(self, validated_data):
-		return Account.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
+		return Account.objects.create_user( validated_data['email'],validated_data['username'], validated_data['password'] 
+		, validated_data['firstname'] , validated_data['lastname'])
         
         
 

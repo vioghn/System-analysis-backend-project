@@ -13,6 +13,6 @@ app_name = 'account'
 
 urlpatterns = [
 	path('register/', registration_view, name="register"),
-	path('login/', obtain_auth_token, name="login"), # -> see accounts/api/views.py for response and url info
+	path('login/', obtain_auth_token, name="login"),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

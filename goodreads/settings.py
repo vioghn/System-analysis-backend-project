@@ -41,6 +41,13 @@ INSTALLED_APPS = [
     'account',
     "rest_framework.authtoken",
 ]
+AUTH_USER_MODEL = 'account.Account'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -70,7 +77,7 @@ TEMPLATES = [
     },
 ]
 
-AUTH_USER_MODEL = 'account.Account'
+
 WSGI_APPLICATION = 'goodreads.wsgi.application'
 
 

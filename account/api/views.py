@@ -14,12 +14,14 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth import logout , login
 from rest_framework.views import APIView
 from account.models import Account
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 import json
 
 
  
-@api_view(['POST', ])      
+@api_view(['POST', ]) 
+@permission_classes([AllowAny])     
 def registration_view(request):
 	try: 
 		if request.method == 'POST':
@@ -49,6 +51,7 @@ def registration_view(request):
 
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def login_user(request):
 
         data = {}
@@ -56,19 +59,12 @@ def login_user(request):
         email1 = reqBody["email"]
         print(email1)
         password = reqBody["password"]
-		
-
-
         try:
-
             Accounts = Account.objects.get(email=email1)
         except BaseException as e:
             raise ValidationError({"400": f'{str(e)}'})
 		
         token = Token.objects.get_or_create(user=Accounts)[0].key
-       
-		
-
 		
         if(not(Accounts.check_password( password))):
             raise ValidationError({"message": "password is incorrect"})
@@ -77,6 +73,7 @@ def login_user(request):
             if Accounts.is_active:
                 print(request.user)
                 login(request, Accounts)
+				
                 data["message"] = "user logged in"
                 data["email"] = Accounts.email
 
@@ -93,9 +90,32 @@ def login_user(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def User_logout(request):
 
-	
-    request.user.auth_token.delete()
-    logout(request)
-    return Response('User Logged out successfully')
+	if(request.user.IsAuthenticated):
+		request.user.auth_token.delete()
+		logout(request)
+		return Response('User Logged out successfully')
+	else:
+		return Response('User is not logged in')
+
+
+
+def validate_email(email):
+	account = None
+	try:
+		account = Account.objects.get(email=email)
+	except Account.DoesNotExist:
+		return None
+	if account != None:
+		return email
+
+def validate_username(username):
+	account = None
+	try:
+		account = Account.objects.get(username=username)
+	except Account.DoesNotExist:
+		return None
+	if account != None:
+		return username

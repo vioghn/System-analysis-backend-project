@@ -8,15 +8,15 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Account
-		fields = ('username', 'email' , 'password') 
+		fields = fields = ['pk', 'email', 'username', ]
 	
-	def current_user(self): 
-		try:
-			return Account.objects.get(email=self.validated_data['email'])
-		except ObjectDoesNotExist:
-			raise ValidationError({"400": f'Account doesnt exist'})
-	def get_password(self):
-			return self.validated_data['password']
+	# def current_user(self): 
+	# 	try:
+	# 		return Account.objects.get(email=self.validated_data['email'])
+	# 	except ObjectDoesNotExist:
+	# 		raise ValidationError({"400": f'Account doesnt exist'})
+	# def get_password(self):
+	# 		return self.validated_data['password']
 
 	
 	

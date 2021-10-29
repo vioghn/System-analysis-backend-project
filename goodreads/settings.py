@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'account',
     "rest_framework.authtoken",
+    "corsheaders"
 ]
 AUTH_USER_MODEL = 'account.Account'
 
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'goodreads.urls'

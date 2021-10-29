@@ -21,7 +21,7 @@ import json
 
  
 @api_view(['POST', ]) 
-@permission_classes([AllowAny])     
+    
 def registration_view(request):
 	try: 
 		if request.method == 'POST':
@@ -51,7 +51,6 @@ def registration_view(request):
 
 
 @api_view(["POST"])
-@permission_classes([AllowAny])
 def login_user(request):
 
         data = {}

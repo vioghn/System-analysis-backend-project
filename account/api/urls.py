@@ -14,7 +14,7 @@ app_name = 'account'
 
 urlpatterns = [
 	path('register/', registration_view, name="register"),
-	path('login/', views.login_user, name="login"),
+	path('login/', obtain_auth_token, name="login"),
 	path('logout/', views.User_logout, name="logout"),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

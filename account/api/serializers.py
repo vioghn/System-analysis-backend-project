@@ -10,16 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 		model = Account
 		fields = fields = ['pk', 'email', 'username', ]
 	
-	# def current_user(self): 
-	# 	try:
-	# 		return Account.objects.get(email=self.validated_data['email'])
-	# 	except ObjectDoesNotExist:
-	# 		raise ValidationError({"400": f'Account doesnt exist'})
-	# def get_password(self):
-	# 		return self.validated_data['password']
 
-	
-	
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

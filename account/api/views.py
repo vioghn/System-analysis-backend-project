@@ -99,6 +99,48 @@ def User_logout(request):
 		return Response('User is not logged in')
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def User_API(request, user): 
+	
+
+	try:
+		user = Account.objects.get(user = user)
+	except user.DoesNotExist:
+		return Response(status=status.HTTP_404_NOT_FOUND)
+
+	if request.method == 'GET':
+		serializer = UserSerializer(user)
+		return Response(serializer.data)	
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def User_APIxx(request , token): 
+	
+	try:
+		user = Token.objects.get(key=token).user
+		user = Account.objects.get(user = user)
+	except user.DoesNotExist:
+		return Response(status=status.HTTP_404_NOT_FOUND)
+
+	if request.method == 'GET':
+		serializer = UserSerializer(user)
+		return Response(serializer.data)
+
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated, ))
+def User_API(request):
+
+	try:
+		account = request.user
+	except Account.DoesNotExist:
+		return Response(status=status.HTTP_404_NOT_FOUND)
+
+	if request.method == 'GET':
+		serializer = UserSerializer(account)
+		return Response(serializer.data)
+
 
 def validate_email(email):
 	account = None

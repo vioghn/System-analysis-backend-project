@@ -30,16 +30,14 @@ ALLOWED_HOSTS=['*']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  
-MAILER_EMAIL_BACKEND = EMAIL_BACKEND  
-EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_HOST_PASSWORD = 'Banafsh1380'  
-EMAIL_HOST_USER = 'banafshehgholinejad802@gmail.com'  
-EMAIL_PORT = 465  
-EMAIL_USE_SSL = True  
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_EMAIL_REQUIRED = True
+
+
+EMAIL_HOST = 'smtp@gmail.com'  
+EMAIL_HOST_PASSWORD = 'Goodreads123'  
+EMAIL_HOST_USER = 'goodreadsaccxx@gmail.com'  
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  
+
 # Application definition
 
 INSTALLED_APPS = [

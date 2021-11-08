@@ -1,5 +1,6 @@
 
-from rest_framework import status
+from django.views import generic
+from rest_framework import status , generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
@@ -16,7 +17,11 @@ from account.models import Account
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from .utils import Util
 import json
-
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
 
  
 @api_view(['POST', ]) 
@@ -40,6 +45,15 @@ def registration_view(request):
 
 				token = Token.objects.get(user=account).key
 				data['token'] = token
+				current_site = get_current_site(request).domain
+				reletivelink = reverse('verification')
+				
+				absurl='http://' + current_site +reletivelink + "?token=" +str(token)
+				email_body = 'use link below to verify your email\n' + 'domain:' + absurl
+				data2 = {'content':email_body ,'subject':'please verify you email' ,'to_email':account.email}
+				Util.send_email(data2)
+
+				
 			else:
 				data = serializer.errors
 			return Response(data)
@@ -47,6 +61,13 @@ def registration_view(request):
 	except KeyError as e:
 		print(e)
 		raise ValidationError({"400": f'Field {str(e)} missing'})
+
+
+class VerifyEmail(generic.GenericAPI):
+	def get(self):
+		pass
+
+
 
 
 @api_view(["POST"])

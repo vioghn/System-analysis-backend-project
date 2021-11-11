@@ -17,6 +17,6 @@ urlpatterns = [
 	path('login/', obtain_auth_token, name="login"),
 	path('logout/', views.User_logout, name="logout"),
 	path('properties/', views.User_API, name="properties"),
-	path('verification' , views.VerifyEmail.as_view(), name="verification")
+	path('verification/' , views.VerifyEmail.as_view(), name="verification")
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

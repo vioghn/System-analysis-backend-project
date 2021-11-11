@@ -1,6 +1,7 @@
 
 from django.views import generic
-from rest_framework import status , generics
+from rest_framework import status 
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
@@ -22,10 +23,13 @@ from django.conf import settings
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
+from . import urls
+
 
  
 @api_view(['POST', ]) 
-    
+@permission_classes([])
+@authentication_classes([])  
 def registration_view(request):
 	try: 
 		if request.method == 'POST':
@@ -33,7 +37,7 @@ def registration_view(request):
 			data = {}
 			if serializer.is_valid():
 				account = serializer.save()
-				data['response'] = 'successfully registered new user.'
+				data['response'] = 'successfully registered new user'
 				data['email'] = account.email
 				data['username'] = account.username
 				data['firstname'] = account.firstname
@@ -46,16 +50,15 @@ def registration_view(request):
 				token = Token.objects.get(user=account).key
 				data['token'] = token
 				current_site = get_current_site(request).domain
-				reletivelink = reverse('verification')
+				reletivelink = reverse('account:verification')
 				
 				absurl='http://' + current_site +reletivelink + "?token=" +str(token)
 				email_body = 'use link below to verify your email\n' + 'domain:' + absurl
-				data2 = {'content':email_body ,'subject':'please verify you email' ,'to_email':account.email}
-				Util.send_email(data2)
-
-				
+				data2 = {'content':email_body ,'subject':'please verify you email' ,'to_email':[account.email]}
+				Util.send_email(data2)	
 			else:
 				data = serializer.errors
+
 			return Response(data)
 
 	except KeyError as e:
@@ -63,7 +66,7 @@ def registration_view(request):
 		raise ValidationError({"400": f'Field {str(e)} missing'})
 
 
-class VerifyEmail(generic.GenericAPI):
+class VerifyEmail(generics.GenericAPIView):
 	def get(self):
 		pass
 

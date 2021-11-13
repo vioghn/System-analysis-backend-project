@@ -97,24 +97,6 @@ def verification( request):
 		return Response('Email successfully confirmed') 
 
 	
-
-	
-
-	
-
-		
-
-	
-	
-
-
-		
-
-		
-	
-
-
-
 @api_view(["POST"])
 def login_user(request):
 
@@ -165,34 +147,20 @@ def User_logout(request):
 		return Response('User is not logged in')
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def User_API(request, user): 
+# @api_view(["GET"])
+# @permission_classes([IsAuthenticated])
+# def User_API(request, user): 
 	
 
-	try:
-		user = Account.objects.get(user = user)
-	except user.DoesNotExist:
-		return Response(status=status.HTTP_404_NOT_FOUND)
+# 	try:
+# 		user = Account.objects.get(user = user)
+# 	except user.DoesNotExist:
+# 		return Response(status=status.HTTP_404_NOT_FOUND)
 
-	if request.method == 'GET':
-		serializer = UserSerializer(user)
-		return Response(serializer.data)	
+# 	if request.method == 'GET':
+# 		serializer = UserSerializer(user)
+# 		return Response(serializer.data)	
 
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def User_APIxx(request , token): 
-	
-	try:
-		user = Token.objects.get(key=token).user
-		user = Account.objects.get(user = user)
-	except user.DoesNotExist:
-		return Response(status=status.HTTP_404_NOT_FOUND)
-
-	if request.method == 'GET':
-		serializer = UserSerializer(user)
-		return Response(serializer.data)
 
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated, ))

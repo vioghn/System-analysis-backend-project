@@ -54,7 +54,7 @@ def registration_view(request):
 				current_site = get_current_site(request).domain
 				reletivelink = reverse('account:verification')
 				
-				absurl='http://' + current_site +reletivelink + "?user_id=" + str(account.pk) + "&token=" +str(token)
+				absurl='http://' + current_site +reletivelink + "?token=" +str(token)
 				email_body = 'use link below to verify your email\n' + 'domain:' + absurl
 				data2 = {'content':email_body ,'subject':'please verify you email' ,'to_email':[account.email]}
 				
@@ -73,14 +73,15 @@ def registration_view(request):
 @permission_classes([])
 @authentication_classes([]) 
 def verification( request):
-	id=request.GET.get('user_id')
+	
 	token=request.GET.get('token')
 	try:
-		user = Account.objects.get(pk=id)
-		token1= Token.objects.get(key=token)
-		token2 = str(Token.objects.get(user = user))
+	
+		myuser= Token.objects.get(key=token).user
+		id = myuser.pk
+		user = Account.objects.get(pk = id)
 		
-
+		
 	except(TypeError, ValueError, OverflowError, Token.DoesNotExist):
 		token1=None
 		return Response('Token is invalid or expired. Please request another confirmation email by signing in.', status=status.HTTP_400_BAD_REQUEST)
@@ -91,10 +92,9 @@ def verification( request):
 			return Response('User not found', status=status.HTTP_400_BAD_REQUEST)
 	
 	
-	if(token2 == token): 
-		user.is_active = True
-		user.save()
-		return Response('Email successfully confirmed') 
+	user.is_active = True
+	user.save()
+	return Response('Email successfully confirmed') 
 
 	
 @api_view(["POST"])

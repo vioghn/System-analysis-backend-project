@@ -9,9 +9,9 @@ from .serializers import BookSerializer
 def addbook(request):
     data = dict(request.POST)
     print(data)
-    addbook = AddBook.objects.create(
-        selectedTopic=data['selectedTopic'][0],
+    addbook = AddBook.objects.create(      
         title=data['title'][0],
+        genre=data['genre'][0],
         authors=data['authors'][0],
         publisher=data['publisher'][0],
         publication_date=data['publication_date'][0],
@@ -32,3 +32,5 @@ def show_books(request):
     for i in range(len(books)):
         data.append({'id':books[i].id,'name':books[i].title})
     return Response(data , status=status.HTTP_200_OK)
+
+

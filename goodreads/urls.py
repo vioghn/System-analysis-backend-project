@@ -20,5 +20,6 @@ from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/account/', include('account.api.urls', 'account_api'))
+    path('api/account/', include('account.api.urls', 'account_api')),
+    path('api/account/' , include("book.urls")),
 ]

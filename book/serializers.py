@@ -2,12 +2,12 @@ from rest_framework import serializers
 from .models import AddBook
 
 
-class BookSerializer(serializers.ModelSerializer):
+class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = AddBook
-        fields = (
-            'selectedTopic', 
+        fields = ( 
             'title', 
+            'genre',
             'Description', 
             'bookAvatar', 
             'authors', 

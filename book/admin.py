@@ -11,5 +11,15 @@ class AddBookAdmin(admin.ModelAdmin):
             'publisher', 
             'publication_date', 
             )
+    list_filter = ( 
+            'genre', 
+            'publication_date', 
+            )
+    search_fields = ( 
+            'title',
+            'authors',
+            'publisher', 
+            'Description', 
+            )
 
 admin.site.register(AddBook, AddBookAdmin)

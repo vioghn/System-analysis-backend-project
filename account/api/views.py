@@ -80,7 +80,7 @@ def send_email_content(token , request , account):
 	Util.send_email(data)	
 
 
-
+#activating user account
 @api_view(['GET', ]) 
 @permission_classes([])
 @authentication_classes([]) 
@@ -108,7 +108,7 @@ def verification( request):
 	user.save()
 	return Response('Email successfully confirmed') 
 
-	
+#login user function based view 
 @api_view(["POST"])
 def login_user(request):
 
@@ -146,7 +146,7 @@ def login_user(request):
             raise ValidationError({"400": f'Account doesnt exist'})
 
 
-
+#loging out user 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def User_logout(request):
@@ -159,21 +159,7 @@ def User_logout(request):
 		return Response('User is not logged in')
 
 
-# @api_view(["GET"])
-# @permission_classes([IsAuthenticated])
-# def User_API(request, user): 
-	
-
-# 	try:
-# 		user = Account.objects.get(user = user)
-# 	except user.DoesNotExist:
-# 		return Response(status=status.HTTP_404_NOT_FOUND)
-
-# 	if request.method == 'GET':
-# 		serializer = UserSerializer(user)
-# 		return Response(serializer.data)	
-
-
+#user properties 
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated, ))
 def User_API(request):
@@ -187,7 +173,7 @@ def User_API(request):
 		serializer = UserSerializer(account)
 		return Response(serializer.data)
 
-
+#User updating account 
 @api_view(['PUT',])
 @permission_classes((IsAuthenticated, ))
 def update_account_view(request):
@@ -205,6 +191,310 @@ def update_account_view(request):
 			data['response'] = 'Account update success'
 			return Response(data=data)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+#check passsword to be completed 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -226,31 +516,31 @@ def validate_username(username):
 	if account != None:
 		return username
 
-# class ObtainAuthTokenView(APIView):
+class ObtainAuthTokenView(APIView):
 
-# 	authentication_classes = []
-# 	permission_classes = []
+	authentication_classes = []
+	permission_classes = []
 
-# 	def post(self, request):
-# 		context = {}
+	def post(self, request):
+		context = {}
 
-# 		email = request.POST.get('username')
-# 		password = request.POST.get('password')
-# 		account = authenticate(email=email, password=password)
-# 		if account:
-# 			try:
-# 				token = Token.objects.get(user=account)
-# 			except Token.DoesNotExist:
-# 				token = Token.objects.create(user=account)
-# 			context['response'] = 'Successfully authenticated.'
-# 			context['pk'] = account.pk
-# 			context['email'] = email.lower()
-# 			context['token'] = token.key
-# 		else:
-# 			context['response'] = 'Error'
-# 			context['error_message'] = 'Invalid credentials'
+		username = request.POST.get('username')
+		password = request.POST.get('password')
+		account = authenticate(username=username, password=password)
+		if account:
+			try:
+				token = Token.objects.get(user=account)
+			except Token.DoesNotExist:
+				token = Token.objects.create(user=account)
+			context['response'] = 'Successfully authenticated.'
+			context['pk'] = account.pk
+			context['username'] = username.lower()
+			context['token'] = token.key
+		else:
+			context['response'] = 'Error'
+			context['error_message'] = 'Invalid credentials'
 
-# 		return Response(context)
+		return Response(context)
 
 @api_view(['GET', ])
 @permission_classes([])
@@ -269,38 +559,38 @@ def does_account_exist_view(request):
 
 
 
-class ChangePasswordView(UpdateAPIView):
+# class ChangePasswordView(UpdateAPIView):
 
-	serializer_class = ChangePasswordSerializer
-	model = Account
-	permission_classes = (IsAuthenticated,)
-	authentication_classes = (TokenAuthentication,)
+# 	serializer_class = ChangePasswordSerializer
+# 	model = Account
+# 	permission_classes = (IsAuthenticated,)
+# 	authentication_classes = (TokenAuthentication,)
 
-	def get_object(self, queryset=None):
-		obj = self.request.user
-		return obj
+# 	def get_object(self, queryset=None):
+# 		obj = self.request.user
+# 		return obj
 
-	def update(self, request, *args, **kwargs):
-		self.object = self.get_object()
-		serializer = self.get_serializer(data=request.data)
+# 	def update(self, request, *args, **kwargs):
+# 		self.object = self.get_object()
+# 		serializer = self.get_serializer(data=request.data)
 
-		if serializer.is_valid():
-			# Check old password
-			if not self.object.check_password(serializer.data.get("old_password")):
-				return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+# 		if serializer.is_valid():
+# 			# Check old password
+# 			if not self.object.check_password(serializer.data.get("old_password")):
+# 				return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
 
-			# confirm the new passwords match
-			new_password = serializer.data.get("new_password")
-			confirm_new_password = serializer.data.get("confirm_new_password")
-			if new_password != confirm_new_password:
-				return Response({"new_password": ["New passwords must match"]}, status=status.HTTP_400_BAD_REQUEST)
+# 			# confirm the new passwords match
+# 			new_password = serializer.data.get("new_password")
+# 			confirm_new_password = serializer.data.get("confirm_new_password")
+# 			if new_password != confirm_new_password:
+# 				return Response({"new_password": ["New passwords must match"]}, status=status.HTTP_400_BAD_REQUEST)
 
-			# set_password also hashes the password that the user will get
-			self.object.set_password(serializer.data.get("new_password"))
-			self.object.save()
-			return Response({"response":"successfully changed password"}, status=status.HTTP_200_OK)
+# 			# set_password also hashes the password that the user will get
+# 			self.object.set_password(serializer.data.get("new_password"))
+# 			self.object.save()
+# 			return Response({"response":"successfully changed password"}, status=status.HTTP_200_OK)
 
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

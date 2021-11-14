@@ -14,12 +14,11 @@ app_name = 'account'
 
 urlpatterns = [
 	path('check_if_account_exists/', views.does_account_exist_view, name="check_if_account_exists"),
-	path('change_password/', views.ChangePasswordView.as_view(), name="change_password"),
 	path('register/', registration_view, name="register"),
-	path('login/', obtain_auth_token, name="login"),
+	path('login/', views.ObtainAuthTokenView.as_view(), name="login"),
 	path('logout/', views.User_logout, name="logout"),
 	path('properties/', views.User_API, name="properties"),
-	path('properties/update', views.User_API, name="update"),
+	path('properties/update/', views.update_account_view, name="update"),
 	path('verification/' , views.verification, name="verification")
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

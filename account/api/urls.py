@@ -22,6 +22,6 @@ urlpatterns = [
 	path('properties/', views.User_API, name="properties"),
 	path('properties/update/', views.update_account_view, name="update"),
 	path('verification/' , views.verification, name="verification"),
-	path('DeleteAccount', views.DeleteAccount.as_view(),name="DeleteAccount" )
+	path('DeleteAccount/', views.DeleteAccount.as_view(),name="DeleteAccount" )
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

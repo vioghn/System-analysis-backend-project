@@ -151,12 +151,10 @@ def login_user(request):
 @permission_classes([IsAuthenticated])
 def User_logout(request):
 
-	if(request.user.IsAuthenticated):
-		request.user.auth_token.delete()
-		logout(request)
-		return Response('User Logged out successfully')
-	else:
-		return Response('User is not logged in')
+	request.user.auth_token.delete()
+	logout(request)
+	return Response('User Logged out successfully')
+	
 
 
 #user properties 

@@ -1,5 +1,12 @@
 from django.db import models
 from PIL import Image
+from django.contrib.auth.models import User
+
+
+class Book(models.Model):
+    favourites = models.ManyToManyField(
+        User, related_name='favourite', default=None, blank=True)
+
 
 
 class AddBook(models.Model):

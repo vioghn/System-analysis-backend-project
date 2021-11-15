@@ -5,7 +5,8 @@ from . import views
 urlpatterns = [
     path("addbook/", views.add_book, name="addbook"),
     path("loadbook/", views.show_books, name="show_books"),
-    path('search/', BookSearch.as_view(), name="BookSearch"),
+    path('booksearch/', BookSearch.as_view(), name="BookSearch"),
+    #path('search/', search.as_view(), name="BookSearch"),
     path('category/', FilterCategory.as_view(), name="FilterCategory"),
 ]
 

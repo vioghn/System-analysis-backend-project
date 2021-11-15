@@ -1,6 +1,10 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.viewsets import ModelViewSet
 from rest_framework import status, generics
 from rest_framework.response import Response
+from django.http import Http404
 from .models import AddBook
 from .serializers import BookSerializer
 
@@ -40,17 +44,23 @@ class BookSearch(generics.ListAPIView):
     def get_queryset(self):
         searchedword = self.request.query_params.get('q', None)
         queryset = AddBook.objects.all()
+        print("searchedword",searchedword)
         if searchedword is None:
             return queryset
         if searchedword is not None:
             if searchedword == "":
-                raise Http404
-            queryset = queryset.filter(
-                Q(title=searchedword)
-            )
+                return Http404
+            queryset = queryset.filter(title=searchedword)
             if len(queryset) == 0:
-                raise Http404
+                return Http404
         return queryset
+
+
+class Search(ModelViewSet):
+    queryset = AddBook.objects.all()
+    serializer_class = BookSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ('title')
 
 
 

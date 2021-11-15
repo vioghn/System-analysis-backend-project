@@ -184,6 +184,7 @@ def update_account_view(request):
 		return Response(status=status.HTTP_404_NOT_FOUND)
 		
 	if request.method == 'PUT':
+		
 		serializer = UserSerializer(account, data=request.data)
 		data = {}
 		if serializer.is_valid():
@@ -191,6 +192,9 @@ def update_account_view(request):
 			data['response'] = 'Account update success'
 			return Response(data=data)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 def validate_email(email):
 	account = None
@@ -209,6 +213,8 @@ def validate_username(username):
 		return None
 	if account != None:
 		return username
+
+#login class
 
 class ObtainAuthTokenView(APIView):
 
@@ -239,6 +245,8 @@ class ObtainAuthTokenView(APIView):
 
 		return Response(context)
 
+#existence of an account 
+
 @api_view(['GET', ])
 @permission_classes([])
 @authentication_classes([])
@@ -248,10 +256,24 @@ def does_account_exist_view(request):
 		email = request.GET['email'].lower()
 		data = {}
 		try:
-			account = Account.objects.get(email=email)
+			account = Account.objects.get(usernme=email)
 			data['response'] = email
 		except Account.DoesNotExist:
 			data['response'] = "Account does not exist"
 		return Response(data)
+
+
+
+#Delete account 
+class DeleteAccount(APIView):
+	
+	permission_classes = [IsAuthenticated]
+
+	def delete(self, request, *args, **kwargs):
+		user=self.request.user
+		user.delete()
+
+		return Response({"result":"user delete"})
+
 
 #check passsword to be completed 

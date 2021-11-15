@@ -1,9 +1,11 @@
+from django.core.exceptions import ViewDoesNotExist
 from django.urls import path
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from account.api import views
 from account.api.views import(
+	DeleteAccount,
 	registration_view,
 
 )
@@ -19,6 +21,7 @@ urlpatterns = [
 	path('logout/', views.User_logout, name="logout"),
 	path('properties/', views.User_API, name="properties"),
 	path('properties/update/', views.update_account_view, name="update"),
-	path('verification/' , views.verification, name="verification")
+	path('verification/' , views.verification, name="verification"),
+	path('DeleteAccount', views.DeleteAccount.as_view(),name="DeleteAccount" )
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

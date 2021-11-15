@@ -9,9 +9,24 @@ class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Account
 		fields = fields = ['pk', 'image',  'firstname', 'lastname','username']
+
+
+	# def validate_username(self, value):
+	# 	user = self.context['request'].user
+	# 	if Account.objects.exclude(pk=user.pk).filter(username=value).exists():
+	# 		raise serializers.ValidationError({"username": "This username is already in use."})
+	# 	return value
+
+
+
+	# def update(self, instance, validated_data):
+	# 	instance.first_name = validated_data['first_name']
+	# 	instance.last_name = validated_data['last_name']
+	# 	instance.username = validated_data['username']
+	# instance.save()
+
+    #     return instance
 	
-
-
 
 class RegistrationSerializer(serializers.ModelSerializer):
 
@@ -46,7 +61,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     
 		return account
 
-
+#to be completed 
 class ChangePasswordSerializer(serializers.Serializer):
 
 	old_password 				= serializers.CharField(required=True)

@@ -1,10 +1,8 @@
 from rest_framework.decorators import api_view, permission_classes
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, generics
 from rest_framework.response import Response
 from .models import AddBook
 from .serializers import BookSerializer
-
 
 @api_view(['POST'])
 def add_book(request):
@@ -36,21 +34,19 @@ def show_books(request):
 
 
 
-class ShopSearch(generics.ListAPIView):
-    serializer_class = ShopSerializer
-    permission_classes = [AllowAny]
+class BookSearch(generics.ListAPIView):
+    serializer_class = BookSerializer
 
     def get_queryset(self):
         searchedword = self.request.query_params.get('q', None)
-        queryset = Shop.objects.all()
+        queryset = AddBook.objects.all()
         if searchedword is None:
             return queryset
         if searchedword is not None:
             if searchedword == "":
                 raise Http404
             queryset = queryset.filter(
-                Q(titleicontains=searchedword) |
-                Q(addressicontains=searchedword)
+                Q(title=searchedword)
             )
             if len(queryset) == 0:
                 raise Http404
@@ -58,13 +54,11 @@ class ShopSearch(generics.ListAPIView):
 
 
 
-
-class FilterCategoryItemListAPIView(generics.ListAPIView):
-    serializer_class = ItemSerializer
-    permission_classes = [AllowAny]
-    authentication_classes = []
+class FilterCategory(generics.ListAPIView):
+    serializer_class = BookSerializer
 
     def get_queryset(self):
         q = self.request.query_params.get('q', None)
-        queryset = Item.objects.filter(category=q)
+        queryset = AddBook.objects.all()
         return queryset
+

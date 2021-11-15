@@ -1,12 +1,12 @@
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.viewsets import ModelViewSet
-from rest_framework import status, generics
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import Http404
 from .models import AddBook
 from .serializers import BookSerializer
+from rest_framework import filters,generics,status
+from rest_framework.pagination import PageNumberPagination
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
 
 @api_view(['POST'])
 def add_book(request):
@@ -41,6 +41,8 @@ def show_books(request):
 class BookSearch(generics.ListAPIView):
     serializer_class = BookSerializer
 
+
+
     def get_queryset(self):
         searchedword = self.request.query_params.get('q', None)
         queryset = AddBook.objects.all()
@@ -49,18 +51,17 @@ class BookSearch(generics.ListAPIView):
             return queryset
         if searchedword is not None:
             if searchedword == "":
-                return Http404
-            queryset = queryset.filter(title=searchedword)
+                raise Http404
+            queryset = queryset.filter(
+                Q(title__icontains=searchedword) |
+                Q(Description__icontains=searchedword) |
+                Q(authors__icontains=searchedword) |
+                Q(publisher__icontains=searchedword) 
+        )
             if len(queryset) == 0:
-                return Http404
+                raise Http404
         return queryset
 
-
-class Search(ModelViewSet):
-    queryset = AddBook.objects.all()
-    serializer_class = BookSerializer
-    filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ('title')
 
 
 
@@ -69,6 +70,6 @@ class FilterCategory(generics.ListAPIView):
 
     def get_queryset(self):
         q = self.request.query_params.get('q', None)
-        queryset = AddBook.objects.all()
+        queryset = AddBook.objects.filter(Q(genre=q) | Q(publication_date=q))
         return queryset
 

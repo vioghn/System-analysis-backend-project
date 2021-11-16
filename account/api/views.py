@@ -2,11 +2,11 @@
 from django.views import generic
 from rest_framework import status 
 from rest_framework import generics
+from rest_framework import response
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from account.api.serializers import RegistrationSerializer, UserSerializer,ChangePasswordSerializer
-
 from django.core import validators
 from django.core.exceptions import ValidationError
 from rest_framework.authentication import TokenAuthentication
@@ -175,14 +175,13 @@ def User_API(request):
 @api_view(['PUT',])
 @permission_classes((IsAuthenticated, ))
 def update_account_view(request):
-
+	
 	try:
 		account = request.user
 	except Account.DoesNotExist:
 		return Response(status=status.HTTP_404_NOT_FOUND)
 		
 	if request.method == 'PUT':
-		
 		serializer = UserSerializer(account, data=request.data)
 		data = {}
 		if serializer.is_valid():
@@ -218,28 +217,34 @@ class ObtainAuthTokenView(APIView):
 
 	authentication_classes = []
 	permission_classes = []
-
+	
 	def post(self, request):
 		context = {}
-
+		email = request.POST.get('email')
 		username = request.POST.get('username')
 		password = request.POST.get('password')
 		account = authenticate(username=username, password=password)
-		if ((account)  and account.is_active == True):
+		print("fortest" , account.email)
+		if (account):
 			try:
 				
 				token = Token.objects.get(user=account)
 			except Token.DoesNotExist:
 				token = Token.objects.create(user=account)
-			if(account.is_active):
+			if(account.is_active and email == account.email):
 				context['response'] = 'Successfully authenticated.'
 				context['pk'] = account.pk
 				context['username'] = username.lower()
 				context['token'] = token.key
+			else: 
+
+				context['error_message'] = 'Invalid credentials'
+				return Response( status=status.HTTP_400_BAD_REQUEST) 
 			
 		else:
 			context['response'] = 'Error'
 			context['error_message'] = 'Invalid credentials'
+	 
 
 		return Response(context)
 

@@ -34,6 +34,7 @@ class MyAccountManager(BaseUserManager):
 		user.is_admin = True
 		user.is_staff = True
 		user.is_superuser = True
+		user.is_active = True
 		user.save(using=self._db)
 		return user
 
@@ -58,9 +59,10 @@ class Account(AbstractBaseUser):
 	is_superuser			= models.BooleanField(default=False)
 	firstname 				= models.CharField(max_length=40 , default = '')
 	lastname 				= models.CharField(max_length=40 , default = '')
+	bio						= models.CharField(max_length=100, default = '')
 	
 
-
+	
 
 	USERNAME_FIELD = 'username'
 	REQUIRED_FIELDS = ['email']

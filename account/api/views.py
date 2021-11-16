@@ -1,4 +1,5 @@
 
+from django.contrib.auth.models import User
 from django.views import generic
 from rest_framework import status 
 from rest_framework import generics
@@ -6,7 +7,7 @@ from rest_framework import response
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
-from account.api.serializers import RegistrationSerializer, UserSerializer,ChangePasswordSerializer
+from account.api.serializers import RegistrationSerializer, UserSerializer,ChangePasswordSerializer, UserSerializeImage
 from django.core import validators
 from django.core.exceptions import ValidationError
 from rest_framework.authentication import TokenAuthentication
@@ -178,11 +179,27 @@ def update_account_view(request):
 	
 	try:
 		account = request.user
+		
 	except Account.DoesNotExist:
 		return Response(status=status.HTTP_404_NOT_FOUND)
 		
 	if request.method == 'PUT':
-		serializer = UserSerializer(account, data=request.data)
+
+		
+        
+		if('username' not in request.data):
+			serializer = UserSerializeImage(account, data=request.data)
+
+
+		else:
+			request.data._mutable = True
+			if(request.data['username'] == ''   ): 
+				request.data['username'] = account.username
+
+			
+			request.data._mutable = False
+			serializer = UserSerializer(account, data=request.data)
+		
 		data = {}
 		if serializer.is_valid():
 			serializer.save()

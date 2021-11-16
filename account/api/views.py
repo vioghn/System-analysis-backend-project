@@ -224,7 +224,7 @@ class ObtainAuthTokenView(APIView):
 		username = request.POST.get('username')
 		password = request.POST.get('password')
 		account = authenticate(username=username, password=password)
-		print("fortest" , account.email)
+		#print("fortest" , account.email)
 		if (account):
 			try:
 				
@@ -239,11 +239,12 @@ class ObtainAuthTokenView(APIView):
 			else: 
 
 				context['error_message'] = 'Invalid credentials'
-				return Response( status=status.HTTP_400_BAD_REQUEST) 
+				return Response( "Invalid credentials",status=status.HTTP_400_BAD_REQUEST) 
 			
 		else:
 			context['response'] = 'Error'
 			context['error_message'] = 'Invalid credentials'
+			return Response( "ERROR !Invalid credentials",status=status.HTTP_400_BAD_REQUEST) 
 	 
 
 		return Response(context)

@@ -31,6 +31,15 @@ ALLOWED_HOSTS=['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
 
+
+EMAIL_HOST = 'smtp.gmail.com'  
+EMAIL_HOST_PASSWORD = 'Goodreads123'  
+EMAIL_HOST_USER = 'greadsacc@gmail.com'  
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,8 +60,12 @@ AUTH_USER_MODEL = 'account.Account'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),
+   'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

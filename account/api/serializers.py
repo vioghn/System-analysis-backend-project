@@ -8,10 +8,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Account
-		fields = fields = ['pk', 'email', 'username', ]
+		
+		fields  = ['pk', 'image',  'firstname', 'lastname','username']
+
+
+
+
 	
-
-
 
 class RegistrationSerializer(serializers.ModelSerializer):
 
@@ -45,6 +48,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
 		# account.create(self.validated_data)
     
 		return account
+
+#to be completed 
+class ChangePasswordSerializer(serializers.Serializer):
+
+	old_password 				= serializers.CharField(required=True)
+	new_password 				= serializers.CharField(required=True)
+	confirm_new_password 		= serializers.CharField(required=True)
 
         
         

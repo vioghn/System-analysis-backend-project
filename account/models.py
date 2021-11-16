@@ -34,8 +34,17 @@ class MyAccountManager(BaseUserManager):
 		user.is_admin = True
 		user.is_staff = True
 		user.is_superuser = True
+		user.is_active = True
 		user.save(using=self._db)
 		return user
+
+
+def upload_location(instance, filename, **kwargs):
+	file_path = 'account/image/{title}-{filename}'.format(
+			 title=str(instance.username), filename=filename
+		) 
+	return file_path
+
 
 class Account(AbstractBaseUser):
 	email 					= models.EmailField(verbose_name="email", max_length=60, unique=True)
@@ -43,15 +52,17 @@ class Account(AbstractBaseUser):
 	date_joined				= models.DateTimeField(verbose_name='date joined', auto_now_add=True)
 	last_login				= models.DateTimeField(verbose_name='last login', auto_now=True)
 	is_admin				= models.BooleanField(default=False)
-	is_active				= models.BooleanField(default=True)
+	is_active				= models.BooleanField(default=False)
+	image 					= models.ImageField(upload_to=upload_location, blank=True)
 	is_staff				= models.BooleanField(default=False)
 	is_writer				= models.BooleanField(default=False)
 	is_superuser			= models.BooleanField(default=False)
 	firstname 				= models.CharField(max_length=40 , default = '')
 	lastname 				= models.CharField(max_length=40 , default = '')
+	bio						= models.CharField(max_length=100, default = '')
 	
 
-
+	
 
 	USERNAME_FIELD = 'username'
 	REQUIRED_FIELDS = ['email']

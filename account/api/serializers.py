@@ -9,8 +9,16 @@ class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Account
 		
-		fields  = ['pk', 'image',  'firstname', 'lastname','username']
+		fields  = ['pk', 'image',  'firstname', 'lastname','username' , 'bio']
 
+
+
+class UserSerializeImage(serializers.ModelSerializer):
+
+	class Meta:
+		model = Account
+		
+		fields  = ['pk', 'image'  ]
 
 
 

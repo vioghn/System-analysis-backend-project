@@ -1,10 +1,34 @@
+from book.models import Book
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, render
+from django.http.response import HttpResponseRedirect
 from rest_framework.decorators import api_view, permission_classes
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, generics
 from rest_framework.response import Response
 from .models import AddBook
 from .serializers import BookSerializer
+from django.contrib.auth.decorators import login_required
+from book.models import Book
+from django.http import response
 
+
+@ login_required
+def favourite_list(request):
+    new = Book.newmanager.filter(favourites=request.user)
+    return response(new)
+   # return render(request,
+   # 'accounts/favourites.')
+
+
+@ login_required
+def favourite_add(request, id):
+    book = get_object_or_404(Book, id=id)
+    if book.favourites.filter(id=request.user.id).exists():
+       book.favourites.remove(request.user)
+    else:
+        book.favourites.add(request.user)
+    return HttpResponseRedirect(request.Meta['HTTP_REFERER'])
 
 @api_view(['POST'])
 def add_book(request):

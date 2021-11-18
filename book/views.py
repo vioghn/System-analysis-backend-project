@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView 
 from django.http import Http404
 from .models import AddBook
 from .serializers import BookSerializer
@@ -66,6 +67,27 @@ def show_booksdddd(request):
     return Response(data , status=status.HTTP_200_OK)
 
 
+class bookprofile(APIView):
+    serializer_class = BookSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self,request,pk):
+        book = AddBook.objects.get(id=data['id'][0])
+        return book
+
+
+@api_view(['POST'])
+@permission_classes([])
+@authentication_classes([])
+def bookprofilemmmmm(request):
+    if request.method == 'POST':
+        data = dict(request.POST)
+        book = AddBook.objects.get(id=data['id'][0])
+        serializer = BookSerializer(book)
+        return Response(serializer.data)
+
+
 
 class BookSearch(generics.ListAPIView):
     serializer_class = BookSerializer
@@ -104,3 +126,14 @@ class FilterCategory(generics.ListAPIView):
         queryset = AddBook.objects.filter(Q(genre=q) | Q(authors=q))
         return queryset
         
+
+class created(generics.ListCreateAPIView):
+    serializer_class = BookSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def get_queryset(request):
+        if request.method == 'POST':
+            data = dict(request.POST)
+            book = AddBook.objects.get(id=data['id'][0])
+            return book

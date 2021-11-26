@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from .models import AddBook
+from .models import AddBook , Comment
 
 
 class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = AddBook
+        comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
         fields = ( 
             'title', 
             'genre',
@@ -13,4 +14,12 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
             'authors', 
             'publisher', 
             'publication_date', 
+            'comments'
             )
+
+class CommentSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'body', 'owner', 'post']

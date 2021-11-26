@@ -1,9 +1,11 @@
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 from django.http import Http404
-from .models import AddBook
-from .serializers import BookSerializer
+from .models import AddBook  , Comment
+from .serializers import BookSerializer , CommentSerializer
 from rest_framework import filters,generics,status
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import render, get_object_or_404, redirect
@@ -104,3 +106,22 @@ class FilterCategory(generics.ListAPIView):
         queryset = AddBook.objects.filter(Q(genre=q) | Q(authors=q))
         return queryset
         
+#------------
+#comment
+class CommentList(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+
+
+
+# class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Comment.objects.all()
+#     serializer_class = CommentSerializer
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+#                           IsOwnerOrReadOnly]

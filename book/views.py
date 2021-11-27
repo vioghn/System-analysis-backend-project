@@ -110,18 +110,28 @@ class FilterCategory(generics.ListAPIView):
 #comment
 class CommentList(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = CommentSerializer
+   
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
 
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = []
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addComment(request):
+    serializer = CommentSerializer(data=request.data)
+    if serializer.is_valid():
+        account = request.user
+        serializer.save(owner= account)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
-# class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
-#     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-#                           IsOwnerOrReadOnly]

@@ -7,7 +7,9 @@ urlpatterns = [
     path("loadbook/", views.show_books.as_view(), name="show_books"),
     path('search/', views.BookSearch.as_view(), name="BookSearch"),
     path('category/', FilterCategory.as_view(), name="FilterCategory"),
-    path('comments/' , views.CommentList.as_view(), name="comments")
+    path('comments/' , views.CommentList.as_view(), name="comments"),
+     path('comments/<int:pk>/', views.CommentDetail.as_view(), name = "comment-detail"),
+
 ]
 
 

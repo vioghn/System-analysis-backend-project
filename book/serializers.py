@@ -5,7 +5,7 @@ from .models import AddBook , Comment
 class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = AddBook
-        comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+        comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True )
         fields = ( 
             'title', 
             'genre',
@@ -15,6 +15,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
             'publisher', 
             'publication_date', 
             'comments'
+            
             )
 
 class CommentSerializer(serializers.ModelSerializer):

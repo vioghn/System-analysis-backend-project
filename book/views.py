@@ -10,6 +10,7 @@ from rest_framework import filters,generics,status
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from book.permissions import IsOwnerOrReadOnly
 
 @api_view(['POST'])
 @permission_classes([])
@@ -121,7 +122,7 @@ class CommentList(generics.ListCreateAPIView):
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = []
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly , IsOwnerOrReadOnly]
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

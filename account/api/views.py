@@ -7,7 +7,7 @@ from rest_framework import response
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
-from account.api.serializers import RegistrationSerializer, UserSerializer,ChangePasswordSerializer, UserSerializeImage
+from account.api.serializers import RegistrationSerializer, UserSerializer,ChangePasswordSerializer, UserSerializerwithoutusername
 from django.core import validators
 from django.core.exceptions import ValidationError
 from rest_framework.authentication import TokenAuthentication
@@ -184,11 +184,8 @@ def update_account_view(request):
 		return Response(status=status.HTTP_404_NOT_FOUND)
 		
 	if request.method == 'PUT':
-
-		
-        
-		if('username' not in request.data):
-			serializer = UserSerializeImage(account, data=request.data)
+		if('username' not  in request.data): 
+			serializer = UserSerializerwithoutusername(account, data=request.data , partial=True)
 
 
 		else:
@@ -196,13 +193,19 @@ def update_account_view(request):
 			if(request.data['username'] == ''   ): 
 				request.data['username'] = account.username
 
+				
+				request.data._mutable = False
+				serializer = UserSerializer(account, data=request.data , partial=True)
 			
-			request.data._mutable = False
-			serializer = UserSerializer(account, data=request.data)
-		
 		data = {}
 		if serializer.is_valid():
+			serializer.validate(request.data)
 			serializer.save()
+			
+			image_url = str(request.build_absolute_uri(account.image.url))
+			if "?" in image_url:
+				image_url = image_url[:image_url.rfind("?")]
+			data['image'] = image_url
 			data['response'] = 'Account update success'
 			return Response(data=data)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

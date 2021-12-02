@@ -170,11 +170,14 @@ def User_API(request):
 
 	if request.method == 'GET':
 		serializer = UserSerializer(account)
-		image_url = str(request.build_absolute_uri(account.image.url))
+		image_url = ''
+		if(account.image != ''):
+			image_url = str(request.build_absolute_uri(account.image.url))
 		# keep the return value of serializer.data
 	serialized_data = serializer.data
 # Manipulate it as you wish
 	serialized_data['image'] = image_url
+	serialized_data['email'] = account.email 
 # Return the manipulated dict
 	return Response(serialized_data)
 

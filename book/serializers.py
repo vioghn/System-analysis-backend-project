@@ -5,6 +5,9 @@ from .models import AddBook , Comment
 class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = AddBook
+
+       
+
         comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True )
         fields = (
             'pk',

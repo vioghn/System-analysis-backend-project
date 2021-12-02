@@ -1,8 +1,12 @@
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+
+from rest_framework.views import APIView 
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
+
 from django.http import Http404
 from .models import AddBook  , Comment
 from .serializers import BookSerializer , CommentSerializer
@@ -70,6 +74,31 @@ def show_booksdddd(request):
 
 
 
+
+
+def Delete(request):
+    data = dict(request.POST)
+    book = AddBook.objects.get(id=data['id'][0])
+    if list(book) != []:
+        book.delete()
+        return Response({'message':'delete complete'})
+    else:
+        return Response({'message':'you can`t delete'})
+
+
+
+@api_view(['POST'])
+@permission_classes([])
+@authentication_classes([])
+def bookprofile(request):
+    if request.method == 'POST':
+        data = dict(request.POST)
+        book = AddBook.objects.get(id=data['id'][0])
+        serializer = BookSerializer(book)
+        return Response(serializer.data)
+
+
+
 class BookSearch(generics.ListAPIView):
     serializer_class = BookSerializer
     permission_classes = [AllowAny]
@@ -104,9 +133,22 @@ class FilterCategory(generics.ListAPIView):
 
     def get_queryset(self):
         q = self.request.query_params.get('q', None)
-        queryset = AddBook.objects.filter(Q(genre=q) | Q(authors=q))
+        queryset = AddBook.objects.filter(Q(genre=q) | Q(publication_date=q))
         return queryset
         
+
+
+class created(generics.ListCreateAPIView):
+    serializer_class = BookSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def get_queryset(request):
+        if request.method == 'POST':
+            data = dict(request.POST)
+            book = AddBook.objects.get(id=data['id'][0])
+            return book
+
 #------------
 #comment
 class CommentList(generics.ListCreateAPIView):
@@ -133,6 +175,3 @@ def addComment(request):
         serializer.save(owner= account)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-

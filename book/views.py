@@ -67,6 +67,69 @@ def show_booksdddd(request):
 
 
 
+<<<<<<< Updated upstream
+=======
+
+@api_view(['POST'])
+@permission_classes([])
+@authentication_classes([])
+def Delete(request):
+    data = dict(request.POST)
+    book = AddBook.objects.filter(id=data['id'][0])
+    if list(book) != []:
+        book.delete()
+        return Response({'message':'delete complete'})
+    else:
+        return Response({'message':'you can`t delete'})
+
+
+@api_view(['POST'])
+@permission_classes([])
+@authentication_classes([])
+@permission_classes([])
+def Edit(request):
+    book = AddBook.objects.filter(id=request.data['id'])
+    if list(book) != []:
+        book = book[0]
+        serializer = BookSerializer(book)
+        data = serializer.data
+
+        if 'title' in request.data.keys():
+            book.title = request.data['title']
+
+        if 'genre' in request.data.keys():
+            book.genre = request.data['genre']
+
+        if 'Description' in request.data.keys():
+            book.Description = request.data['Description']
+
+        if 'authors' in request.data.keys():
+            book.authors = request.data['authors']
+
+        if 'publisher' in request.data.keys():
+            book.genre = request.data['publisher']
+
+        book.save()
+        return Response({'message':'edit successfully'})
+        
+    return Response({'message': 'Book not found'})
+
+
+
+
+@api_view(['POST'])
+@permission_classes([])
+@authentication_classes([])
+def bookprofile(request):
+    if request.method == 'POST':
+        data = dict(request.POST)
+        book = AddBook.objects.get(id=data['id'][0])
+        serializer = BookSerializer(book)
+        return Response(serializer.data)
+
+
+
+>>>>>>> Stashed changes
 class BookSearch(generics.ListAPIView):
     serializer_class = BookSerializer
     permission_classes = [AllowAny]

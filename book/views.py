@@ -93,7 +93,7 @@ def Delete(request):
 def bookprofile(request):
     if request.method == 'POST':
         data = dict(request.POST)
-        book = AddBook.objects.get(id=data['id'][0])
+        book = AddBook.objects.get(id=data['pk'][0])
         serializer = BookSerializer(book)
         return Response(serializer.data)
 

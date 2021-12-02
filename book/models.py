@@ -9,4 +9,4 @@ class AddBook(models.Model):
     bookAvatar = models.FileField(upload_to="book/image", blank=True)
     authors = models.CharField(max_length=100, blank=True)
     publisher = models.CharField(max_length=100, blank=True)
-    publication_date = models.DateField()
+    publication_date = models.DateField(blank=True)

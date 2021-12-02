@@ -67,20 +67,24 @@ def show_booksdddd(request):
     return Response(data , status=status.HTTP_200_OK)
 
 
-class bookprofile(APIView):
-    serializer_class = BookSerializer
-    permission_classes = [AllowAny]
-    authentication_classes = []
 
-    def post(self,request,pk):
-        book = AddBook.objects.get(id=data['id'][0])
-        return book
+
+
+def Delete(request):
+    data = dict(request.POST)
+    book = AddBook.objects.get(id=data['id'][0])
+    if list(book) != []:
+        book.delete()
+        return Response({'message':'delete complete'})
+    else:
+        return Response({'message':'you can`t delete'})
+
 
 
 @api_view(['POST'])
 @permission_classes([])
 @authentication_classes([])
-def bookprofilemmmmm(request):
+def bookprofile(request):
     if request.method == 'POST':
         data = dict(request.POST)
         book = AddBook.objects.get(id=data['id'][0])
@@ -123,7 +127,7 @@ class FilterCategory(generics.ListAPIView):
 
     def get_queryset(self):
         q = self.request.query_params.get('q', None)
-        queryset = AddBook.objects.filter(Q(genre=q) | Q(authors=q))
+        queryset = AddBook.objects.filter(Q(genre=q) | Q(publication_date=q))
         return queryset
         
 

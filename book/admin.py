@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AddBook
+from .models import AddBook , Comment
 
 class AddBookAdmin(admin.ModelAdmin):
     list_display =  ( 
@@ -10,6 +10,7 @@ class AddBookAdmin(admin.ModelAdmin):
             'authors', 
             'publisher', 
             'publication_date', 
+            
             )
     list_filter = ( 
             'genre', 
@@ -22,4 +23,16 @@ class AddBookAdmin(admin.ModelAdmin):
             'Description', 
             )
 
+class Commentadmin(admin.ModelAdmin):
+    list_display =  ( 
+            'id', 'body', 'owner', 'post'
+
+            
+            )
+   
+
+
+
+
 admin.site.register(AddBook, AddBookAdmin)
+admin.site.register(Comment , Commentadmin)

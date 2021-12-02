@@ -3,6 +3,13 @@ from account.models import Account
 from django.core.serializers.json import DjangoJSONEncoder 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
+from django.conf import settings
+from django.core.files.storage import default_storage
+from django.core.files.storage import FileSystemStorage
+import os
+from .utils import  is_image_size_valid
+
+IMAGE_SIZE_MAX_BYTES = 1024 * 1024 * 2 # 2MB
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -10,15 +17,83 @@ class UserSerializer(serializers.ModelSerializer):
 		model = Account
 		
 		fields  = ['pk', 'image',  'firstname', 'lastname','username' , 'bio']
+	
 
 
+	def validate(self, user):
+		try:
+			
+			image = user['image']
+			url = os.path.join(settings.TEMP , str(image))
+			storage = FileSystemStorage(location=url)
 
-class UserSerializeImage(serializers.ModelSerializer):
+			with storage.open('', 'wb+') as destination:
+				for chunk in image.chunks():
+					destination.write(chunk)
+				destination.close()
+
+			# Check image size
+			if not is_image_size_valid(url, IMAGE_SIZE_MAX_BYTES):
+				os.remove(url)
+				raise serializers.ValidationError({"response": "That image is too large. Images must be less than 2 MB. Try a different image."})
+
+	
+			os.remove(url)
+		except KeyError:
+			pass
+		return user
+
+	
+
+class UserSerializerwithoutusername(serializers.ModelSerializer):
 
 	class Meta:
 		model = Account
 		
-		fields  = ['pk', 'image'  ]
+		fields  = ['pk', 'image',  'firstname', 'lastname' , 'bio']
+	
+
+
+	def validate(self, user):
+		try:
+			
+			image = user['image']
+			url = os.path.join(settings.TEMP , str(image))
+			storage = FileSystemStorage(location=url)
+
+			with storage.open('', 'wb+') as destination:
+				for chunk in image.chunks():
+					destination.write(chunk)
+				destination.close()
+
+			# Check image size
+			if not is_image_size_valid(url, IMAGE_SIZE_MAX_BYTES):
+				os.remove(url)
+				raise serializers.ValidationError({"response": "That image is too large. Images must be less than 2 MB. Try a different image."})
+
+	
+			os.remove(url)
+		except KeyError:
+			pass
+		return user
+
+
+
+
+		
+
+
+
+# class UserSerializeImage(serializers.ModelSerializer):
+	
+# 	class Meta:
+# 		model = Account
+		
+# 		fields  = ['pk', 'image'  ]
+
+
+	
+
 
 
 

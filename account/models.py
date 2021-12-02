@@ -40,7 +40,7 @@ class MyAccountManager(BaseUserManager):
 
 
 def upload_location(instance, filename, **kwargs):
-	file_path = 'account/image/{title}-{filename}'.format(
+	file_path = 'account/{filename}'.format(
 			 title=str(instance.username), filename=filename
 		) 
 	return file_path
@@ -53,7 +53,7 @@ class Account(AbstractBaseUser):
 	last_login				= models.DateTimeField(verbose_name='last login', auto_now=True)
 	is_admin				= models.BooleanField(default=False)
 	is_active				= models.BooleanField(default=False)
-	image 					= models.ImageField(upload_to=upload_location, blank=True)
+	image 					= models.ImageField(upload_to=upload_location, blank=True , null=True)
 	is_staff				= models.BooleanField(default=False)
 	is_writer				= models.BooleanField(default=False)
 	is_superuser			= models.BooleanField(default=False)

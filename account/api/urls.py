@@ -24,4 +24,7 @@ urlpatterns = [
 	path('verification/' , views.verification, name="verification"),
 	path('DeleteAccount/', views.DeleteAccount.as_view(),name="DeleteAccount" )
 ]
+
+
+
 urlpatterns = format_suffix_patterns(urlpatterns)

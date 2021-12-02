@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BookSearch, FilterCategory, show_books, bookprofile
+from .views import BookSearch, FilterCategory, show_books
 from . import views
 
 urlpatterns = [

@@ -170,7 +170,16 @@ def User_API(request):
 
 	if request.method == 'GET':
 		serializer = UserSerializer(account)
-		return Response(serializer.data)
+		image_url = str(request.build_absolute_uri(account.image.url))
+		# keep the return value of serializer.data
+	serialized_data = serializer.data
+# Manipulate it as you wish
+	serialized_data['image'] = image_url
+# Return the manipulated dict
+	return Response(serialized_data)
+
+
+		
 
 #User updating account 
 @api_view(['PUT',])
@@ -184,6 +193,8 @@ def update_account_view(request):
 		return Response(status=status.HTTP_404_NOT_FOUND)
 		
 	if request.method == 'PUT':
+
+		
 		if('username' not  in request.data): 
 			serializer = UserSerializerwithoutusername(account, data=request.data , partial=True)
 
@@ -192,10 +203,9 @@ def update_account_view(request):
 			request.data._mutable = True
 			if(request.data['username'] == ''   ): 
 				request.data['username'] = account.username
-
-				
 				request.data._mutable = False
-				serializer = UserSerializer(account, data=request.data , partial=True)
+
+			serializer = UserSerializer(account, data=request.data , partial=True)
 			
 		data = {}
 		if serializer.is_valid():

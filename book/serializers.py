@@ -6,7 +6,8 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = AddBook
         comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True )
-        fields = ( 
+        fields = (
+            'pk',
             'title', 
             'genre',
             'Description', 
@@ -16,10 +17,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
             'publication_date', 
             'comments'
             
-            )
-
-
-
+        )
 
 class CommentSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')

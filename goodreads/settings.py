@@ -50,12 +50,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',
     'account',
     'rest_framework.authtoken',
     'corsheaders',
     'book',
+    'chats',
+    
 ]
 AUTH_USER_MODEL = 'account.Account'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -101,6 +105,7 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'goodreads.wsgi.application'
+ASGI_APPLICATION = 'goodreads.asgi.application'
 
 
 # Database

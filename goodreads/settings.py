@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'account',
     'rest_framework.authtoken',
     'corsheaders',
+    'django_filters',
     'book',
 ]
 AUTH_USER_MODEL = 'account.Account'

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BookSearch, FilterCategory, show_books
+from .views import BookSearch, FilterCategory, show_books, RateCreateAPIView
 from . import views
 
 urlpatterns = [
@@ -9,9 +9,10 @@ urlpatterns = [
     path("delete/", views.Delete, name="Delete"),
     #path('bookprofile/<int:id>/', views.bookprofile.as_view(), name='delete'),
     path('search/', views.BookSearch.as_view(), name="BookSearch"),
-    path('category/', FilterCategory.as_view(), name="FilterCategory"),
+    path('category/', views.FilterCategory.as_view(), name="FilterCategory"),
     path('comments/' , views.CommentList.as_view(), name="comments"),
-     path('comments/<int:pk>/', views.CommentDetail.as_view(), name = "comment-detail"),
+    path('comments/<int:pk>/', views.CommentDetail.as_view(), name = "comment-detail"),
+    path('rate/create/', views.RateCreateAPIView.as_view(), name="RateCreate"),
 
 ]
 

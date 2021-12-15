@@ -1,7 +1,8 @@
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-
+from datetime import date, timedelta
 from rest_framework.views import APIView 
 
 from rest_framework.permissions import IsAuthenticated
@@ -9,7 +10,7 @@ from rest_framework import permissions
 
 from django.http import Http404
 from .models import AddBook  , Comment
-from .serializers import BookSerializer , CommentSerializer
+from .serializers import BookSerializer , CommentSerializer, RateSerializer
 from rest_framework import filters,generics,status
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import render, get_object_or_404, redirect
@@ -124,7 +125,14 @@ class BookSearch(generics.ListAPIView):
         return queryset
 
 
-
+class FilterCategoryssss(generics.ListAPIView):
+    queryset = AddBook.objects.all()
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    serializer_class = BookSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['publication_date', 'genre']
+    print("dfjlgtj")
 
 class FilterCategory(generics.ListAPIView):
     serializer_class = BookSerializer
@@ -133,9 +141,29 @@ class FilterCategory(generics.ListAPIView):
 
     def get_queryset(self):
         q = self.request.query_params.get('q', None)
-        queryset = AddBook.objects.filter(Q(genre=q) | Q(publication_date=q))
+        queryset = AddBook.objects.filter(publication_date__year=q)
+        queryset = queryset.filter(genre=q)
         return queryset
+
+
         
+class RateCreateAPIView(generics.CreateAPIView):
+    serializer_class = RateSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def get_queryset(self):
+        queryset = Rate.objects.filter(shop=self.kwargs['pk'])
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        serializer_data = request.data.copy()
+        serializer_data.update({'user':request.user.id})
+        serializer = self.get_serializer(data=serializer_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class created(generics.ListCreateAPIView):

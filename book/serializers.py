@@ -1,10 +1,14 @@
 from rest_framework import serializers
-from .models import AddBook , Comment
+from .models import AddBook , Comment, Rate
 
 
-class BookSerializer(serializers.HyperlinkedModelSerializer):
+class BookSerializer(serializers.ModelSerializer):
+    #rate_count = serializers.ReadOnlyField()
+    #rate_value = serializers.ReadOnlyField()
+    
     class Meta:
         model = AddBook
+
 
        
 
@@ -28,3 +32,14 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'body', 'owner', 'post']
+
+
+class RateSerializer(serializers.ModelSerializer):
+
+    book_rates_user = serializers.RelatedField(read_only=True)
+    rates_book = serializers.RelatedField(read_only=True)
+    #user = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Rate
+        fields = ['id','user','book','rate', 'rates_book', 'book_rates_user']

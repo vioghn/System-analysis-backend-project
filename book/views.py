@@ -153,7 +153,7 @@ class RateCreateAPIView(generics.CreateAPIView):
     authentication_classes = []
 
     def get_queryset(self):
-        queryset = Rate.objects.filter(shop=self.kwargs['pk'])
+        queryset = Rate.objects.filter(book=self.kwargs['pk'])
         return queryset
 
     def create(self, request, *args, **kwargs):

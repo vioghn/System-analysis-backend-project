@@ -4,7 +4,7 @@ from rest_framework.authtoken.models import Token
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from phonenumber_field.modelfields import PhoneNumberField
 
 class MyAccountManager(BaseUserManager):
 	def create_user(self, email, username, password=None , fname = '' , lname = ''):
@@ -60,7 +60,16 @@ class Account(AbstractBaseUser):
 	firstname 				= models.CharField(max_length=40 , default = '')
 	lastname 				= models.CharField(max_length=40 , default = '')
 	bio						= models.CharField(max_length=100, default = '')
-	
+	phone					= PhoneNumberField(null=True, blank= True)
+	isstory					= models.BooleanField(default=False)
+	issocial				= models.BooleanField(default=False)
+	ispsychology			= models.BooleanField(default=False)
+	ishistoric				= models.BooleanField(default=False)
+	isarty					= models.BooleanField(default=False)
+	date_birth				= models.DateField(max_length=8)
+	province				= models.CharField(max_length=30,null = True)
+	gender					= models.CharField(max_length = 10 , null = True)
+
 
 	
 

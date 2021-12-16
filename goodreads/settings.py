@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'book',
     'chats',
+    'phonenumber_field', 
     
 ]
 AUTH_USER_MODEL = 'account.Account'

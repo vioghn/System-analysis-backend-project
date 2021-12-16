@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from chats.models import Chats, Contacts
+from chats.models import Chat, Contact
 from chats.views import get_user_contact
 
 
@@ -13,14 +13,14 @@ class ChatSerializer(serializers.ModelSerializer):
     participants = ContactSerializer(many=True)
 
     class Meta:
-        model = Chats
+        model = Chat
         fields = ('id', 'messages', 'participants')
         read_only = ('id')
 
     def create(self, validated_data):
         print(validated_data)
         participants = validated_data.pop('participants')
-        chat = Chats()
+        chat = Chat()
         chat.save()
         for username in participants:
             contact = get_user_contact(username)
@@ -28,12 +28,4 @@ class ChatSerializer(serializers.ModelSerializer):
         chat.save()
         return chat
 
-from django.contrib.auth import get_user_model
-from rest_framework import permissions
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    CreateAPIView,
-    DestroyAPIView,
-    UpdateAPIView
-)
+

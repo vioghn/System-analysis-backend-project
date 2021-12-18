@@ -9,13 +9,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 
 from django.http import Http404
-from .models import AddBook  , Comment
-from .serializers import BookSerializer , CommentSerializer, RateSerializer
+from .models import AddBook  , Comment, Favourite
+from .serializers import BookSerializer , CommentSerializer, RateSerializer, FavouriteSerializer
 from rest_framework import filters,generics,status
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from book.permissions import IsOwnerOrReadOnly
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as filters
 
 @api_view(['POST'])
 @permission_classes([])
@@ -51,7 +54,7 @@ def add_book(request):
     
 
 
-class show_books(generics.ListAPIView):
+class BookListView(generics.ListAPIView):
     serializer_class = BookSerializer
     permission_classes = [AllowAny]
     authentication_classes = []
@@ -59,6 +62,16 @@ class show_books(generics.ListAPIView):
     def get_queryset(self):
         queryset = AddBook.objects.all()
         return queryset
+
+
+
+
+class FilterCategoryaaaa(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    queryset = AddBook.objects.all()
+    serializer_class = BookSerializer
+    filterset_fields = ['publication_date', 'genre']
 
 
 
@@ -125,32 +138,83 @@ class BookSearch(generics.ListAPIView):
         return queryset
 
 
-class FilterCategoryssss(generics.ListAPIView):
-    queryset = AddBook.objects.all()
-    permission_classes = [AllowAny]
-    authentication_classes = []
-    serializer_class = BookSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['publication_date', 'genre']
-    print("dfjlgtj")
+ 
+
 
 class FilterCategory(generics.ListAPIView):
     serializer_class = BookSerializer
     permission_classes = [AllowAny]
     authentication_classes = []
 
+
+
     def get_queryset(self):
-        q = self.request.query_params.get('q', None)
-        queryset = AddBook.objects.filter(publication_date__year=q)
-        queryset = queryset.filter(genre=q)
+        queryset=AddBook.objects.all()
+        genre = self.request.query_params.get('genre', None)
+        genre = genre if not genre == '' else None
+        publisher = self.request.query_params.get('publisher', None)
+        publisher = publisher if not publisher == '' else None
+        publication_date__year = self.request.query_params.get('publication_date__year', None)
+        publication_date__year = publication_date__year if not publication_date__year == '' else None
+        if genre is not None:
+            queryset = queryset.filter(genre=genre)
+        if publisher is not None:
+            queryset = queryset.filter(publisher=publisher)
+        if publication_date__year is not None:
+            queryset = queryset.filter(publication_date__year=publication_date__year)
         return queryset
+
 
 
         
 class RateCreateAPIView(generics.CreateAPIView):
     serializer_class = RateSerializer
-    permission_classes = [AllowAny]
-    authentication_classes = []
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = Rate.objects.filter(book=self.kwargs['pk'])
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        serializer_data = request.data.copy()
+        serializer_data.update({'user':request.user.id})
+        serializer = self.get_serializer(data=serializer_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def Favouritecc(request):
+    data = dict(request.POST)
+    user = request.user
+    book = AddBook.objects.filter(id=request.data['book'])
+    if list(book) == []:
+        return Response({'message': 'book not found'})
+    favourite = Favourite.objects.filter(user=request.user, book=book[0])
+    if list(favourite) != []:
+        favourite.delete()
+        book[0].favourite = False
+        book[0].save()
+        book[0].favourite_count -=1
+        book[0].save()
+        return Response({'message': 'favourite is False'}, status=status.HTTP_201_CREATED)
+    else:
+        favourite = Favourite.objects.create(user=request.user, book=book[0])
+        favourite.save()
+        book[0].favourite = True
+        book[0].save()
+        book[0].favourite_count +=1
+        book[0].save()
+        return Response({'message': 'favourite is True'}, status=status.HTTP_201_CREATED)
+
+
+class FavouriteCreateAPIView(generics.CreateAPIView):
+    serializer_class = FavouriteSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         queryset = Rate.objects.filter(book=self.kwargs['pk'])

@@ -1,6 +1,6 @@
 from django.db import models
 from PIL import Image
-
+from django.db.models import Avg
 
 
 
@@ -13,6 +13,8 @@ class AddBook(models.Model):
     publisher = models.CharField(max_length=100, blank=True)
 
     publication_date = models.DateField(blank=True)
+    favourite = models.BooleanField(default=False, blank=True, null=True)
+    favourite_count = models.IntegerField(default=0)
 
     @property
     def rate_count(self):
@@ -23,6 +25,8 @@ class AddBook(models.Model):
         if Rate.objects.filter(book_id=self.id).count() is 0:
             return 0
         return Rate.objects.filter(book_id=self.id).aggregate(Avg('rate'))['rate__avg']
+
+
 
 
 
@@ -45,6 +49,14 @@ class Rate(models.Model):
     user = models.ForeignKey('account.Account', related_name='book_rates_user', on_delete=models.CASCADE, blank=True)
     book = models.ForeignKey('book.AddBook', related_name='rates_book', on_delete=models.CASCADE, blank=True)
     rate = models.IntegerField(default=2, blank=True, null=True)
+
+    def str(self):
+        return self.book
+
+class Favourite(models.Model):
+
+    user = models.ForeignKey('account.Account', related_name='book_favourites_user', on_delete=models.CASCADE, blank=True)
+    book = models.ForeignKey('book.AddBook', related_name='favourites_book', on_delete=models.CASCADE, blank=True)
 
     def str(self):
         return self.book

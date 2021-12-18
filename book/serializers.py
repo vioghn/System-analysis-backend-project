@@ -1,16 +1,12 @@
 from rest_framework import serializers
-from .models import AddBook , Comment, Rate
+from .models import AddBook , Comment, Rate, Favourite
 
 
 class BookSerializer(serializers.ModelSerializer):
-    #rate_count = serializers.ReadOnlyField()
-    #rate_value = serializers.ReadOnlyField()
     
     class Meta:
         model = AddBook
 
-
-       
 
         comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True )
         fields = (
@@ -22,7 +18,11 @@ class BookSerializer(serializers.ModelSerializer):
             'authors', 
             'publisher', 
             'publication_date', 
-            'comments'
+            'comments',
+            'rate_count',
+            'rate_value',
+            'favourite',
+            'favourite_count',
             
         )
 
@@ -38,8 +38,16 @@ class RateSerializer(serializers.ModelSerializer):
 
     book_rates_user = serializers.RelatedField(read_only=True)
     rates_book = serializers.RelatedField(read_only=True)
-    #user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Rate
-        fields = ['id','user','book','rate', 'rates_book', 'book_rates_user']
+        fields = "__all__"
+
+class FavouriteSerializer(serializers.ModelSerializer):
+
+    #book_favourites_user = serializers.RelatedField(read_only=True)
+    #favourites_book = serializers.RelatedField(read_only=True)
+ 
+    class Meta:
+        model = Favourite
+        fields = "__all__"

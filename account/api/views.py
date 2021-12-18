@@ -7,7 +7,7 @@ from rest_framework import response
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
-from account.api.serializers import RegistrationSerializer, UserSerializer,ChangePasswordSerializer, UserSerializerwithoutusername
+from account.api.serializers import RegistrationSerializer, UserSerializer,ChangePasswordSerializer, UserSerializerwithoutusername , UserSerializerothers
 from django.core import validators
 from django.core.exceptions import ValidationError
 from rest_framework.authentication import TokenAuthentication
@@ -178,8 +178,58 @@ def User_API(request):
 # Manipulate it as you wish
 	serialized_data['image'] = image_url
 	serialized_data['email'] = account.email 
+	issocial = serialized_data['issocial']
+	isstory = serialized_data['isstory'] 
+	ishistoric = serialized_data['ishistoric']
+	isarty = serialized_data['isarty']
+	ispsychology = serialized_data['ispsychology']
+	isscientific = serialized_data['isscientific']
+	
+	if(issocial =='true'): 
+		account.issocial = True
+	if(ishistoric == 'true'): 
+		account.ishistoric = True 
+	if(isarty == 'true'): 
+		account.isarty = True 
+	if(ispsychology == 'true'):
+		account.ispsychology =True
+
+	if(isstory == 'true'):
+		account.isstory =True
+
+	
+
+	
 # Return the manipulated dict
 	return Response(serialized_data)
+
+
+
+
+
+@api_view(['POST', ])
+@permission_classes((IsAuthenticated, ))
+def User_APIo(request):
+	
+	user = request.POST.get('username')
+	account = Account.objects.get(username = user)
+	if request.method == 'POST':
+		serializer = UserSerializerothers(account)
+		image_url = ''
+		if(account.image != ''):
+			image_url = str(request.build_absolute_uri(account.image.url))
+		# keep the return value of serializer.data
+	serialized_data = serializer.data
+# Manipulate it as you wish
+	serialized_data['image'] = image_url
+	serialized_data['email'] = account.email 
+	
+	
+
+	
+# Return the manipulated dict
+	return Response(serialized_data)
+
 
 
 		

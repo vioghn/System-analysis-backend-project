@@ -8,16 +8,22 @@ from django.core.files.storage import default_storage
 from django.core.files.storage import FileSystemStorage
 import os
 from .utils import  is_image_size_valid
-
 IMAGE_SIZE_MAX_BYTES = 1024 * 1024 * 2 # 2MB
 
 class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Account
+		fields  = ['pk', 'image',  'firstname', 'lastname','username' , 'bio' , 'province' ,
+		 'gender' , 'phone_number' , 'date_birth' , 'isstory' , 'issocial' , 'ishistoric' , 'isarty' , 'ispsychology' , 'isscientific']
+	
+
+
+class UserSerializerothers(serializers.ModelSerializer):
+	class Meta:
+		model = Account
 		
 		fields  = ['pk', 'image',  'firstname', 'lastname','username' , 'bio']
-	
 
 
 	def validate(self, user):
@@ -42,15 +48,15 @@ class UserSerializer(serializers.ModelSerializer):
 		except KeyError:
 			pass
 		return user
-
-	
+			
 
 class UserSerializerwithoutusername(serializers.ModelSerializer):
 
 	class Meta:
 		model = Account
 		
-		fields  = ['pk', 'image',  'firstname', 'lastname' , 'bio']
+		fields  = ['pk', 'image',  'firstname', 'lastname','username' , 'bio' ,
+		 'province' , 'gender' , 'phone_number' , 'date_birth' , 'isstory' , 'issocial' , 'ishistoric' , 'isarty' , 'ispsychology' , 'isscientific'  ]
 	
 
 
@@ -76,26 +82,6 @@ class UserSerializerwithoutusername(serializers.ModelSerializer):
 		except KeyError:
 			pass
 		return user
-
-
-
-
-		
-
-
-
-# class UserSerializeImage(serializers.ModelSerializer):
-	
-# 	class Meta:
-# 		model = Account
-		
-# 		fields  = ['pk', 'image'  ]
-
-
-	
-
-
-
 
 	
 

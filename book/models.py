@@ -1,6 +1,6 @@
 from django.db import models
 from PIL import Image
-
+from django.db.models import Avg
 
 
 
@@ -17,6 +17,8 @@ class AddBook(models.Model):
 
 
 
+
+
 class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     body = models.TextField(blank=False)
@@ -26,4 +28,6 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['created']
+
+
 

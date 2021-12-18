@@ -20,7 +20,6 @@ class MyAccountManager(BaseUserManager):
 		user.firstname = fname; 
 		user.lastname= lname; 
 		user.set_password(password)
-		
 		user.save(using=self._db)
 		return user
 
@@ -66,13 +65,11 @@ class Account(AbstractBaseUser):
 	ispsychology			= models.BooleanField(default=False)
 	ishistoric				= models.BooleanField(default=False)
 	isarty					= models.BooleanField(default=False)
+	isscientific			= models.BooleanField(default=False)
 	date_birth				= models.DateField(max_length=8)
-	province				= models.CharField(max_length=30,null = True)
-	gender					= models.CharField(max_length = 10 , null = True)
-
-
-	
-
+	province				= models.CharField(max_length=30,null = True , default = 'آذربایجان غربی')
+	gender					= models.CharField(max_length = 10 , null = True , default = 'مرد')
+	phone_number			= models.CharField(max_length = 12 , null = True , blank = True)
 	USERNAME_FIELD = 'username'
 	REQUIRED_FIELDS = ['email']
 	objects = MyAccountManager()

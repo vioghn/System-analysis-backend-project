@@ -21,6 +21,7 @@ urlpatterns = [
 	path('logout/', views.User_logout, name="logout"),
 	path('properties/', views.User_API, name="properties"),
 	path('properties/update/', views.update_account_view, name="update"),
+	path('propertiesothers/', views.User_APIo, name="propertiesothers"),
 	path('verification/' , views.verification, name="verification"),
 	path('DeleteAccount/', views.DeleteAccount.as_view(),name="DeleteAccount" )
 ]

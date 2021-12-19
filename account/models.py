@@ -5,6 +5,9 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
+from django.utils import timezone
+
+
 
 class MyAccountManager(BaseUserManager):
 	def create_user(self, email, username, password=None , fname = '' , lname = ''):
@@ -52,7 +55,7 @@ class Account(AbstractBaseUser):
 	last_login				= models.DateTimeField(verbose_name='last login', auto_now=True)
 	is_admin				= models.BooleanField(default=False)
 	is_active				= models.BooleanField(default=False)
-	image 					= models.ImageField(upload_to=upload_location, blank=True , null=True)
+	image 					= models.ImageField(upload_to=upload_location, blank=True , null=True , default = 'a2.jpg' )
 	is_staff				= models.BooleanField(default=False)
 	is_writer				= models.BooleanField(default=False)
 	is_superuser			= models.BooleanField(default=False)
@@ -66,7 +69,7 @@ class Account(AbstractBaseUser):
 	ishistoric				= models.BooleanField(default=False)
 	isarty					= models.BooleanField(default=False)
 	isscientific			= models.BooleanField(default=False)
-	date_birth				= models.DateField(max_length=8)
+	date_birth				= models.DateField(max_length=8 ,default= timezone.now  , blank = True)
 	province				= models.CharField(max_length=30,null = True , default = 'آذربایجان غربی')
 	gender					= models.CharField(max_length = 10 , null = True , default = 'مرد')
 	phone_number			= models.CharField(max_length = 12 , null = True , blank = True)
@@ -84,6 +87,13 @@ class Account(AbstractBaseUser):
 	# Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
 	def has_module_perms(self, app_label):
 		return True
+
+	@property
+	def _image(self):
+
+		if self.image :
+			return self.image
+		return None
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

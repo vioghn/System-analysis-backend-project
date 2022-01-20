@@ -1,5 +1,6 @@
 
 from django.contrib.auth.models import User
+from django.db.models.fields import BLANK_CHOICE_DASH
 from django.views import generic
 from rest_framework import status 
 from rest_framework import generics
@@ -7,7 +8,7 @@ from rest_framework import response
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
-from account.api.serializers import RegistrationSerializer, UserSerializer,ChangePasswordSerializer, UserSerializerwithoutusername
+from account.api.serializers import RegistrationSerializer, UserSerializer,ChangePasswordSerializer, UserSerializerwithoutusername , UserSerializerothers
 from django.core import validators
 from django.core.exceptions import ValidationError
 from rest_framework.authentication import TokenAuthentication
@@ -178,8 +179,58 @@ def User_API(request):
 # Manipulate it as you wish
 	serialized_data['image'] = image_url
 	serialized_data['email'] = account.email 
+	issocial = serialized_data['issocial']
+	isstory = serialized_data['isstory'] 
+	ishistoric = serialized_data['ishistoric']
+	isarty = serialized_data['isarty']
+	ispsychology = serialized_data['ispsychology']
+	isscientific = serialized_data['isscientific']
+	
+	if(issocial =='true'): 
+		account.issocial = True
+	if(ishistoric == 'true'): 
+		account.ishistoric = True 
+	if(isarty == 'true'): 
+		account.isarty = True 
+	if(ispsychology == 'true'):
+		account.ispsychology =True
+
+	if(isstory == 'true'):
+		account.isstory =True
+
+	
+
+	
 # Return the manipulated dict
 	return Response(serialized_data)
+
+
+
+
+
+@api_view(['POST', ])
+@permission_classes((IsAuthenticated, ))
+def User_APIo(request):
+	
+	user = request.POST.get('username')
+	account = Account.objects.get(username = user)
+	if request.method == 'POST':
+		serializer = UserSerializerothers(account)
+		image_url = ''
+		if(account.image != ''):
+			image_url = str(request.build_absolute_uri(account.image.url))
+		# keep the return value of serializer.data
+	serialized_data = serializer.data
+# Manipulate it as you wish
+	serialized_data['image'] = image_url
+	serialized_data['email'] = account.email 
+	
+	
+
+	
+# Return the manipulated dict
+	return Response(serialized_data)
+
 
 
 		
@@ -198,23 +249,117 @@ def update_account_view(request):
 	if request.method == 'PUT':
 
 		
+	
+		
+		if('firstname'  in request.data): 
+				
+			if(request.data['firstname'] == 'undefined' or request.data['firstname'] == ''   ):
+				request.data._mutable = True 
+				request.data['firstname'] = account.firstname
+				request.data._mutable = False
+
+		
+		if('lastname'  in request.data):
+			
+			if(request.data['lastname'] == 'undefined' or request.data['lastname'] == ''  ): 
+				request.data._mutable = True 
+				request.data['lastname'] = account.lastname
+				request.data._mutable = False
+
+		
+
+		if('bio'  in request.data): 
+			
+			if(request.data['bio'] == 'undefined' or request.data['lastname'] == ''  ): 
+				request.data._mutable = True
+				request.data['bio'] = account.bio
+				request.data._mutable = False
+
+		
+
+		if('image' in request.data): 
+			if( request.data['image'] == '' or request.data['image'] == None or  request.data['image'] == 'null' or  request.data['image'] == 'undefined' ): 
+				request.data._mutable = True
+				request.data['image'] = account.image
+				serializer = UserSerializer(account, data=request.data , partial=True)
+				request.data._mutable = False
+
 		if('username' not  in request.data): 
 			serializer = UserSerializerwithoutusername(account, data=request.data , partial=True)
 
 
-		else:
-			request.data._mutable = True
-			if(request.data['username'] == ''   ): 
+		if('username'   in request.data):
+			
+			if(request.data['username'] == '' or  request.data['username'] == 'undefined'  ):
+				request.data._mutable = True 
 				request.data['username'] = account.username
 				request.data._mutable = False
 
 			serializer = UserSerializer(account, data=request.data , partial=True)
-			
+		
+	
 		data = {}
 		if serializer.is_valid():
 			serializer.validate(request.data)
-			serializer.save()
 			
+			serializer.save()
+			issocial  = account.issocial
+			ishistoric =account.ishistoric
+			isarty = account.isarty
+			ispsychology = account.ispsychology
+			isscientific = account.isscientific
+			isstory = account.isstory
+
+
+			
+			if('issocial' in request.data  ):
+				isstory = request.data['isstory'] 
+			if('ishistoric' in request.data  ):
+				ishistoric = request.data['ishistoric']
+			if('isarty' in request.data  ):
+				isarty = request.data['isarty']
+			if('ispsyhology' in request.data  ):
+				ispsychology = request.data['ispsychology']
+			if('isscientific' in request.data  ):
+				isscientific = request.data['isscientific']
+
+			if('isstory' in request.data  ):
+				isscientific = request.data['isstory']
+
+	
+			if(issocial =='true' ): 
+				account.issocial = True
+
+			elif(issocial =='false' ):
+				account.issocial = False
+			if(ishistoric == 'true' ): 
+				account.ishistoric = True
+			elif(ishistoric == 'false'):
+				account.ishistoric = False
+			if(isarty == 'true'): 
+				account.isarty = True 
+			elif(isarty == 'false'): 
+				account.isarty = False 
+			if(ispsychology == 'true'):
+				account.ispsychology =True
+			elif(ispsychology == 'false'):
+				account.ispsychology =False
+			if(isstory == 'true'):
+				account.isstory =True
+
+			elif(isstory == 'false'):
+				account.isstory =False
+
+
+			
+			if(isscientific == 'true'):
+				account.isscientific =True
+
+			if(isscientific == 'false'):
+				account.isscientific =False
+
+
+
 			image_url = str(request.build_absolute_uri(account.image.url))
 			if "?" in image_url:
 				image_url = image_url[:image_url.rfind("?")]

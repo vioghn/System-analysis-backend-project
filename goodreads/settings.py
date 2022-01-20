@@ -50,12 +50,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',
     'account',
     'rest_framework.authtoken',
     'corsheaders',
     'book',
+    'chats',
+    'phonenumber_field', 
+    
 ]
 AUTH_USER_MODEL = 'account.Account'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -101,7 +106,15 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'goodreads.wsgi.application'
-
+ASGI_APPLICATION = 'goodreads.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

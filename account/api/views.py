@@ -275,11 +275,11 @@ def update_account_view(request):
 				request.data['bio'] = account.bio
 				request.data._mutable = False
 
-		request.data._mutable = True
+		
 
 		if('image' in request.data): 
 			if( request.data['image'] == '' or request.data['image'] == None or  request.data['image'] == 'null' or  request.data['image'] == 'undefined' ): 
-
+				request.data._mutable = True
 				request.data['image'] = account.image
 				serializer = UserSerializer(account, data=request.data , partial=True)
 				request.data._mutable = False
@@ -288,9 +288,10 @@ def update_account_view(request):
 			serializer = UserSerializerwithoutusername(account, data=request.data , partial=True)
 
 
-		else:
-			request.data._mutable = True
-			if(request.data['username'] == '' or  request.data['username'] == 'undefined'  ): 
+		if('username'   in request.data):
+			
+			if(request.data['username'] == '' or  request.data['username'] == 'undefined'  ):
+				request.data._mutable = True 
 				request.data['username'] = account.username
 				request.data._mutable = False
 

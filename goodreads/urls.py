@@ -16,12 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.views.generic import TemplateView
 
 from rest_framework.urlpatterns import format_suffix_patterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/account/', include('account.api.urls', 'account_api')),
     path('' , include("book.urls")),
+    path('chat/', include('chat.api.urls', namespace='chat')),
+    
 ]
 urlpatterns +=static(settings.MEDIA_URL , document_root = settings.MEDIA_ROOT)

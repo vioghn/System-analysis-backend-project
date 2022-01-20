@@ -20,3 +20,9 @@ def bookprofile(request):
         book = AddBook.objects.get(id=data['pk'][0])
         serializer = BookSerializer(book)
         return Response(serializer.data)
+
+
+
+
+
+  

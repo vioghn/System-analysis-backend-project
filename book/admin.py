@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AddBook , Comment
+from .models import AddBook , Comment, Rate, Favourite
 
 class AddBookAdmin(admin.ModelAdmin):
     list_display =  ( 
@@ -10,6 +10,11 @@ class AddBookAdmin(admin.ModelAdmin):
             'authors', 
             'publisher', 
             'publication_date', 
+            'comments',
+            'rate_count',
+            'rate_value',
+            'favourite',
+            'favourite_count',
             
             )
     list_filter = ( 
@@ -32,7 +37,7 @@ class Commentadmin(admin.ModelAdmin):
    
 
 
-
-
+admin.site.register(Favourite)
+admin.site.register(Rate)
 admin.site.register(AddBook, AddBookAdmin)
 admin.site.register(Comment , Commentadmin)

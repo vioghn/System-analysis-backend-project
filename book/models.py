@@ -31,6 +31,8 @@ class AddBook(models.Model):
 
 
 
+
+
 class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     body = models.TextField(blank=False)
@@ -60,3 +62,5 @@ class Favourite(models.Model):
 
     def str(self):
         return self.book
+
+

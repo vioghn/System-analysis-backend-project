@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from .models import AddBook , Comment, Rate, Favourite
+from django.db.models import Sum
+
+
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -9,6 +12,7 @@ class BookSerializer(serializers.ModelSerializer):
 
 
         comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True )
+       
         fields = (
             'pk',
             'title', 
@@ -23,6 +27,12 @@ class BookSerializer(serializers.ModelSerializer):
             'rate_value',
             'favourite',
             'favourite_count',
+
+         
+        
+            
+            
+   
             
         )
 
@@ -51,3 +61,5 @@ class FavouriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favourite
         fields = "__all__"
+
+

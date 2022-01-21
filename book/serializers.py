@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import AddBook , Comment, Rate, Favourite
+
+from .models import AddBook , Comment, Rate, Favourite , Reply , notification
 from django.db.models import Sum
 
 
@@ -26,22 +27,10 @@ class BookSerializer(serializers.ModelSerializer):
             'rate_count',
             'rate_value',
             'favourite',
-            'favourite_count',
-
-         
-        
-            
-            
-   
-            
+            'favourite_count',   
         )
 
-class CommentSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
 
-    class Meta:
-        model = Comment
-        fields = ['id', 'body', 'owner', 'post']
 
 
 class RateSerializer(serializers.ModelSerializer):
@@ -63,3 +52,42 @@ class FavouriteSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+
+class CommentSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    reply = serializers.PrimaryKeyRelatedField(many=True, read_only=True )
+   
+    class Meta:
+        model = Comment
+        fields = ['id', 'body', 'owner', 'post' , 'reply']
+    
+    # def get_replies(self, obj):
+    #     if obj.is_parent:
+    #         return CommentchildSerializer(obj.children(), many=True).data
+    #     return None
+
+    # def get_reply_count(self, obj):
+    #     if obj.is_parent:
+    #         return obj.children().count()
+    #     return 0
+
+
+# class CommentchildSerializer(serializers.ModelSerializer):
+#     owner = serializers.ReadOnlyField(source='owner.username')
+   
+#     class Meta:
+#         model = Comment
+#         fields = ['id', 'body', 'owner', 'post']
+
+class ReplySerializer(serializers.ModelSerializer):
+
+    owner = serializers.ReadOnlyField(source='owner.username')
+    class Meta:
+        model = Reply
+        fields = ['id' , 'owner','body' , 'comment' ]
+
+
+class notifserializer(serializers.ModelSerializer):
+      class Meta:
+        model = notification
+        fields = ['id' , 'user','body'  ]

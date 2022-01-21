@@ -4,13 +4,13 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from datetime import date, timedelta
 from rest_framework.views import APIView 
-
+from django.core.mail import EmailMessage
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 
-from django.http import Http404
-from .models import AddBook  , Comment, Favourite
-from .serializers import BookSerializer , CommentSerializer, RateSerializer, FavouriteSerializer
+from django.http import Http404, request
+from .models import AddBook  , Comment, Favourite  , Rate , Reply, notification 
+from .serializers import BookSerializer , CommentSerializer, RateSerializer, FavouriteSerializer , ReplySerializer, notifserializer
 from rest_framework import filters,generics,status
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import render, get_object_or_404, redirect
@@ -247,6 +247,7 @@ class CommentList(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = CommentSerializer
+    #get_replies() function 
    
 
     def perform_create(self, serializer):
@@ -269,3 +270,84 @@ def addComment(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ReplyList(generics.ListCreateAPIView):
+    queryset = Reply.objects.all()
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = ReplySerializer
+ 
+    def perform_create(self, serializer):
+        mydata = self.request.data 
+        user = self.request.user 
+        username = user.username 
+        commentid = mydata['comment']
+        body = f"your comment has been replied by {username};"
+
+        thecomments = Comment.objects.filter(id = commentid)
+        tcomment = thecomments[0] 
+        acc = tcomment.owner 
+        print(acc); 
+        print(acc.pk); 
+        notifdata = {}; 
+        notifdata['body'] = body
+        notifdata['user'] = acc.pk
+        serializer2 = notifserializer(data = notifdata)
+        email =EmailMessage(subject = 'You have a new notification', body= body + " chackout to see" , to=[acc.email])
+        email.send()
+        serializer.save(owner=self.request.user)
+        if serializer2.is_valid():
+            serializer2.save()
+        else:
+            serializer2.save()
+
+
+class ReplyDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Reply.objects.all()
+    serializer_class = ReplySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly , IsOwnerOrReadOnly]
+
+
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def addReply(request):
+#     data = dict(request.POST)
+#     serializer = ReplySerializer(data=request.data)
+#     if serializer.is_valid():
+#         user = request.user
+#         serializer.save(user= user)
+#         comment = Comment.objects.filter(id=data['comment'][0])
+#         account = comment[0].owner
+#         # send_email_content(request , account)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class notifListView(generics.ListAPIView):
+   
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = notifserializer
+    def get_queryset(self):
+        user = self.request.user
+        user_id = user.pk
+        queryset = notification.objects.filter(user = user_id)
+        return queryset
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addReply(request):
+    data = dict(request.POST)
+    serializer = ReplySerializer(data=request.data)
+    if serializer.is_valid():
+        user = request.user
+        serializer.save(user= user)
+        comment = Comment.objects.filter(id=data['comment'][0])
+        account = comment[0].owner
+        # send_email_content(request , account)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+  
+
+
+#notif with a body =>get a  request from server and return the response containing user token , body content and .. 

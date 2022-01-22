@@ -1,3 +1,4 @@
+
 from django.db import models
 from PIL import Image
 from django.db.models import Avg
@@ -15,6 +16,10 @@ class AddBook(models.Model):
     publication_date = models.DateField(blank=True)
     favourite = models.BooleanField(default=False, blank=True, null=True)
     favourite_count = models.IntegerField(default=0)
+    read_count = models.IntegerField(default=0)
+    saved_count = models.IntegerField(default=0)
+    read = models.BooleanField(default=False, blank=True, null=True)
+    saved = models.BooleanField(default=False, blank=True, null=True)
 
     @property
     def rate_count(self):

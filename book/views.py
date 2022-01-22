@@ -190,6 +190,34 @@ class RateCreateAPIView(generics.CreateAPIView):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+def read(request):
+    data = dict(request.POST)
+    user = request.user
+    book = AddBook.objects.filter(id=request.data['book'])
+    if list(book) == []:
+        return Response({'message': 'book not found'})
+    readobj = Read.objects.filter(user=request.user, book=book[0])
+    if list(readobj) != []:
+        readobj.delete()
+        readobj.read = False
+        book[0].read = False
+        book[0].save()
+        book[0].read_count -=1
+        book[0].save()
+        return Response({'message': 'read is False'}, status=status.HTTP_201_CREATED)
+    else:
+        read = Read.objects.create(user=request.user, book=book[0])
+        read.read = True
+        read.save()
+        book[0].read = True
+        book[0].save()
+        book[0].read_count +=1
+        book[0].save()
+        return Response({'message': 'read is True'}, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def Favouritecc(request):
     data = dict(request.POST)
     user = request.user
@@ -199,11 +227,11 @@ def Favouritecc(request):
     favourite = Favourite.objects.filter(user=request.user, book=book[0])
     if list(favourite) != []:
         favourite.delete()
-        book[0].favourite = False
+        book[0].favou = False
         book[0].save()
         book[0].favourite_count -=1
         book[0].save()
-        return Response({'message': 'favourite is False'}, status=status.HTTP_201_CREATED)
+        return Response({'message': 'read is False'}, status=status.HTTP_201_CREATED)
     else:
         favourite = Favourite.objects.create(user=request.user, book=book[0])
         favourite.save()
@@ -211,7 +239,35 @@ def Favouritecc(request):
         book[0].save()
         book[0].favourite_count +=1
         book[0].save()
-        return Response({'message': 'favourite is True'}, status=status.HTTP_201_CREATED)
+        return Response({'message': 'read is True'}, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def savebook(request):
+    data = dict(request.POST)
+    user = request.user
+    book = AddBook.objects.filter(id=request.data['book'])
+    if list(book) == []:
+        return Response({'message': 'book not found'})
+    Savedx= Saved.objects.filter(user=request.user, book=book[0])
+    if list(Savedx) != []:
+        Savedx.delete()
+        book[0].saved = False
+        book[0].save()
+        book[0].saved_count -=1
+        book[0].save()
+        return Response({'message': 'save is False'}, status=status.HTTP_201_CREATED)
+    else:
+        savedx = Saved.objects.create(user=request.user, book=book[0])
+        savedx.saved = True
+        savedx.save()
+        book[0].saved = True
+        book[0].save()
+        book[0].saved_count +=1
+        book[0].save()
+        return Response({'message': 'save is True'}, status=status.HTTP_201_CREATED)
+
 
 
 class FavouriteCreateAPIView(generics.CreateAPIView):
@@ -379,40 +435,40 @@ def notifdetail(request):
 
 
     
-class SavedCreateAPIView(generics.CreateAPIView):
-    serializer_class = SavedSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+# class SavedCreateAPIView(generics.CreateAPIView):
+#     serializer_class = SavedSerializer
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
-        queryset = Saved.objects.filter(book=self.kwargs['pk'])
-        return queryset
+#     def get_queryset(self):
+#         queryset = Saved.objects.filter(book=self.kwargs['pk'])
+#         return queryset
 
-    def create(self, request, *args, **kwargs):
-        serializer_data = request.data.copy()
-        serializer_data.update({'user':request.user.id})
-        serializer = self.get_serializer(data=serializer_data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+#     def create(self, request, *args, **kwargs):
+#         serializer_data = request.data.copy()
+#         serializer_data.update({'user':request.user.id})
+#         serializer = self.get_serializer(data=serializer_data)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_create(serializer)
+#         headers = self.get_success_headers(serializer.data)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 
-class ReadCreateAPIView(generics.CreateAPIView):
-    serializer_class = ReadSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+# class ReadCreateAPIView(generics.CreateAPIView):
+#     serializer_class = ReadSerializer
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
-        queryset = Read.objects.filter(book=self.kwargs['pk'])
-        return queryset
+#     def get_queryset(self):
+#         queryset = Read.objects.filter(book=self.kwargs['pk'])
+#         return queryset
 
-    def create(self, request, *args, **kwargs):
-        serializer_data = request.data.copy()
-        serializer_data.update({'user':request.user.id})
-        serializer = self.get_serializer(data=serializer_data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+#     def create(self, request, *args, **kwargs):
+#         serializer_data = request.data.copy()
+#         serializer_data.update({'user':request.user.id})
+#         serializer = self.get_serializer(data=serializer_data)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_create(serializer)
+#         headers = self.get_success_headers(serializer.data)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 

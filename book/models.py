@@ -27,15 +27,6 @@ class AddBook(models.Model):
         return Rate.objects.filter(book_id=self.id).aggregate(Avg('rate'))['rate__avg']
 
 
-
-
-
-
-
-
-
-
-
 class Rate(models.Model):
 
     user = models.ForeignKey('account.Account', related_name='book_rates_user', on_delete=models.CASCADE, blank=True)
@@ -52,10 +43,6 @@ class Favourite(models.Model):
 
     def str(self):
         return self.book
-
-
-
-
 
 
 class Comment(models.Model):
@@ -98,4 +85,20 @@ class Reply(models.Model):
         ordering = ['created']
 
 
+class Saved(models.Model):
 
+    user = models.ForeignKey('account.Account', related_name='book_saved_user', on_delete=models.CASCADE, blank=True)
+    book = models.ForeignKey('book.AddBook', related_name='saved_book', on_delete=models.CASCADE, blank=True)
+    saved = models.BooleanField(default=False, blank=True, null=True)
+    
+    def str(self):
+        return self.book
+
+class Read(models.Model):
+
+    user = models.ForeignKey('account.Account', related_name='book_read_user', on_delete=models.CASCADE, blank=True)
+    book = models.ForeignKey('book.AddBook', related_name='read_book', on_delete=models.CASCADE, blank=True)
+    read = models.BooleanField(default=False, blank=True, null=True)
+    
+    def str(self):
+        return self.book

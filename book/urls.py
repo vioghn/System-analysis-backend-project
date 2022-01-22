@@ -16,7 +16,13 @@ urlpatterns = [
     path('favourite/create/', views.Favouritecc, name="Favouritecc"),
     path('replycomment/' , views.ReplyList.as_view(), name="reply"),
     path('replycomment/<int:pk>/', views.ReplyDetail.as_view(), name = "reply-detail"),
-    path('notif/list/', views.notifListView.as_view(), name ="notification")
+    path('notif/list/', views.notifListView.as_view(), name ="notification"),
+    path('notif/unreed/', views.notifunreadListView.as_view(), name ="notification"),
+    path('notifdetail/', views.notifdetail, name ="notification"),
+    path('notifseen/', views.seennotif, name ="notification"),
+    path('read/create/', views.ReadCreateAPIView.as_view(), name="ReadCreateAPIView"),
+    path('saved/create/', views.SavedCreateAPIView.as_view(), name="savedCreateAPIView"),
+    
 ]
 
 

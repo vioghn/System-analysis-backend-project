@@ -1,4 +1,6 @@
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from email.quoprimime import body_check
+from os import access
+from rest_framework.decorators import api_view, permission_classes, authentication_classes 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -7,10 +9,10 @@ from rest_framework.views import APIView
 from django.core.mail import EmailMessage
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
-
+from .utils import Util
 from django.http import Http404, request
-from .models import AddBook  , Comment, Favourite  , Rate , Reply, notification 
-from .serializers import BookSerializer , CommentSerializer, RateSerializer, FavouriteSerializer , ReplySerializer, notifserializer
+from .models import AddBook  , Comment, Favourite  , Rate , Reply, notification , Read , Saved
+from .serializers import BookSerializer , CommentSerializer, RateSerializer, FavouriteSerializer , ReplySerializer, notifserializer , ReadSerializer , SavedSerializer
 from rest_framework import filters,generics,status
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import render, get_object_or_404, redirect
@@ -286,14 +288,14 @@ class ReplyList(generics.ListCreateAPIView):
         tcomment = thecomments[0] 
         acc = tcomment.owner 
         print(acc); 
-        print(acc.pk); 
+        print(acc.email); 
         notifdata = {}; 
         notifdata['body'] = body
         notifdata['user'] = acc.pk
         serializer2 = notifserializer(data = notifdata)
-        email =EmailMessage(subject = 'You have a new notification', body= body + " chackout to see" , to=[acc.email])
-        email.send()
+        datax = {'content': body ,'subject':'notification' ,'to_email':[acc.email]}	
         serializer.save(owner=self.request.user)
+        Util.send_email(datax)
         if serializer2.is_valid():
             serializer2.save()
         else:
@@ -330,19 +332,79 @@ class notifListView(generics.ListAPIView):
         queryset = notification.objects.filter(user = user_id)
         return queryset
 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def addReply(request):
-    data = dict(request.POST)
-    serializer = ReplySerializer(data=request.data)
-    if serializer.is_valid():
-        user = request.user
-        serializer.save(user= user)
-        comment = Comment.objects.filter(id=data['comment'][0])
-        account = comment[0].owner
-        # send_email_content(request , account)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def seennotif(request):
+    notif_id = request.get.GET("id") 
+    notifs = notification.objects.filter(id = notif_id)
+    notif = notifs[0] 
+    notif.isread = True 
+    notif.save() 
+    return Response('seen') 
+
+
+class notifunreadListView(generics.ListAPIView):
+   
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = notifserializer
+    def get_queryset(self):
+        user = self.request.user
+        user_id = user.pk
+        queries = notification.objects.filter(user = user_id)
+        queryset = queries.filter(isread = False)
+        return queryset
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def notifdetail(request):
+    notif_id = request.get.GET("id") 
+    notifs = notification.objects.filter(id = notif_id)
+    notif = notifs[0]
+    data = {} 
+    data['body'] = notif.body 
+    data['user'] = request.user
+    data['isread'] = notif.isread
+
+    return Response(data = data) 
+
+
+    
+class SavedCreateAPIView(generics.CreateAPIView):
+    serializer_class = SavedSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = Saved.objects.filter(book=self.kwargs['pk'])
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        serializer_data = request.data.copy()
+        serializer_data.update({'user':request.user.id})
+        serializer = self.get_serializer(data=serializer_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+
+class ReadCreateAPIView(generics.CreateAPIView):
+    serializer_class = ReadSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = Read.objects.filter(book=self.kwargs['pk'])
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        serializer_data = request.data.copy()
+        serializer_data.update({'user':request.user.id})
+        serializer = self.get_serializer(data=serializer_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 

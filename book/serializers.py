@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import AddBook , Comment, Rate, Favourite , Reply , notification
+from .models import AddBook , Comment, Rate, Favourite , Reply , notification , Read, Saved
 from django.db.models import Sum
 
 
@@ -91,3 +91,23 @@ class notifserializer(serializers.ModelSerializer):
       class Meta:
         model = notification
         fields = ['id' , 'user','body'  ]
+
+
+class SavedSerializer(serializers.ModelSerializer):
+
+    book_saved_user = serializers.RelatedField(read_only=True)
+    saved_book = serializers.RelatedField(read_only=True)
+ 
+    class Meta:
+        model = Saved
+        fields = "__all__"
+
+
+class ReadSerializer(serializers.ModelSerializer):
+
+    book_read_user = serializers.RelatedField(read_only=True)
+    read_book = serializers.RelatedField(read_only=True)
+ 
+    class Meta:
+        model = Read
+        fields = "__all__"

@@ -282,25 +282,34 @@ class ReplyList(generics.ListCreateAPIView):
         user = self.request.user 
         username = user.username 
         commentid = mydata['comment']
-        body = f"your comment has been replied by {username};"
+        
 
         thecomments = Comment.objects.filter(id = commentid)
         tcomment = thecomments[0] 
         acc = tcomment.owner 
+        
+            
+        body = f"your comment has been replied by {username};"
+      
+
         print(acc); 
         print(acc.email); 
         notifdata = {}; 
         notifdata['body'] = body
         notifdata['user'] = acc.pk
-        serializer2 = notifserializer(data = notifdata)
         datax = {'content': body ,'subject':'notification' ,'to_email':[acc.email]}	
-        serializer.save(owner=self.request.user)
+        reply = serializer.save(owner=self.request.user)
+        notifdata['replyid'] = reply.id
         # Util.send_email(datax)
-        if serializer2.is_valid():
-            serializer2.save()
-        else:
-            serializer2.save()
+        serializer2 = notifserializer(data = notifdata)
+        notifdata['isread'] = False
+        print(username)
+        print(acc.username)
 
+        if serializer2.is_valid() and (username != acc.username ):
+            serializer2.save()
+        
+            
 
 class ReplyDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reply.objects.all()
@@ -335,7 +344,7 @@ class notifListView(generics.ListAPIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def seennotif(request):
-    notif_id = request.get.GET("id") 
+    notif_id = request.GET.get("id") 
     notifs = notification.objects.filter(id = notif_id)
     notif = notifs[0] 
     notif.isread = True 
@@ -357,13 +366,14 @@ class notifunreadListView(generics.ListAPIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def notifdetail(request):
-    notif_id = request.get.GET("id") 
+    notif_id = request.GET.get("id") 
     notifs = notification.objects.filter(id = notif_id)
     notif = notifs[0]
     data = {} 
     data['body'] = notif.body 
-    data['user'] = request.user
+    data['user'] = request.user.username
     data['isread'] = notif.isread
+    data['replyid'] = notif.replyid
 
     return Response(data = data) 
 
@@ -406,10 +416,3 @@ class ReadCreateAPIView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-
-
-
-  
-
-
-#notif with a body =>get a  request from server and return the response containing user token , body content and .. 

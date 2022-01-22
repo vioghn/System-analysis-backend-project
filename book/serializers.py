@@ -90,7 +90,7 @@ class ReplySerializer(serializers.ModelSerializer):
 class notifserializer(serializers.ModelSerializer):
       class Meta:
         model = notification
-        fields = ['id' , 'user','body'  ]
+        fields = ['id' , 'user','body'  , 'replyid' , 'isread' ]
 
 
 class SavedSerializer(serializers.ModelSerializer):

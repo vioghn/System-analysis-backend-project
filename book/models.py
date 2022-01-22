@@ -69,8 +69,9 @@ class notification(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     body = models.TextField(blank=False)
     user = models.ForeignKey('account.Account', related_name='notif', on_delete=models.CASCADE, blank=True)
-    replyid = models.ForeignKey('book.Reply', related_name='notif', on_delete=models.CASCADE, blank=True)
-    
+    replyid = models.ForeignKey('book.Reply', related_name='notif', on_delete=models.CASCADE, blank=True , null = True )
+    isread  = models.BooleanField(default=False)
+
     class Meta:
         ordering = ['created']
 
@@ -79,8 +80,8 @@ class Reply(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     body = models.TextField(blank=False)
     owner = models.ForeignKey('account.Account', related_name='reply', on_delete=models.CASCADE, blank=True)
-    comment = models.ForeignKey('book.Comment', related_name='reply', on_delete=models.CASCADE, blank=True)
-    isread  = models.BooleanField(default=False)
+    comment = models.ForeignKey('book.Comment', related_name='reply', on_delete=models.CASCADE, blank=True  )
+    
 
     class Meta:
         ordering = ['created']

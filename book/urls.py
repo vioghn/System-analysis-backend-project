@@ -22,8 +22,9 @@ urlpatterns = [
     path('notifseen/', views.seennotif, name ="notification"),
     path('read/create/', views.read, name="ReadCreateAPIView"),
     path('saved/create/', views.savebook, name="savedCreateAPIView"),  
-    
 ]
+
+
 
 
 

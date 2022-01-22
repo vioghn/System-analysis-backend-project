@@ -69,7 +69,8 @@ class notification(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     body = models.TextField(blank=False)
     user = models.ForeignKey('account.Account', related_name='notif', on_delete=models.CASCADE, blank=True)
-
+    replyid = models.ForeignKey('book.Reply', related_name='notif', on_delete=models.CASCADE, blank=True)
+    
     class Meta:
         ordering = ['created']
 
@@ -99,6 +100,7 @@ class Read(models.Model):
     user = models.ForeignKey('account.Account', related_name='book_read_user', on_delete=models.CASCADE, blank=True)
     book = models.ForeignKey('book.AddBook', related_name='read_book', on_delete=models.CASCADE, blank=True)
     read = models.BooleanField(default=False, blank=True, null=True)
+    
     
     def str(self):
         return self.book

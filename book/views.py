@@ -295,7 +295,7 @@ class ReplyList(generics.ListCreateAPIView):
         serializer2 = notifserializer(data = notifdata)
         datax = {'content': body ,'subject':'notification' ,'to_email':[acc.email]}	
         serializer.save(owner=self.request.user)
-        Util.send_email(datax)
+        # Util.send_email(datax)
         if serializer2.is_valid():
             serializer2.save()
         else:

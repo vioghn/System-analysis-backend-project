@@ -22,7 +22,6 @@ urlpatterns = [
     path('notifseen/', views.seennotif, name ="notification"),
     path('read/create/', views.ReadCreateAPIView.as_view(), name="ReadCreateAPIView"),
     path('saved/create/', views.SavedCreateAPIView.as_view(), name="savedCreateAPIView"),
-    
 ]
 
 

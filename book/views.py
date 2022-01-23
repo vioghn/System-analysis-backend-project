@@ -227,7 +227,7 @@ def Favouritecc(request):
     favourite = Favourite.objects.filter(user=request.user, book=book[0])
     if list(favourite) != []:
         favourite.delete()
-        book[0].favou = False
+        book[0].favourite = False
         book[0].save()
         book[0].favourite_count -=1
         book[0].save()
@@ -429,7 +429,7 @@ def notifdetail(request):
     data['body'] = notif.body 
     data['user'] = request.user.username
     data['isread'] = notif.isread
-    data['replyid'] = notif.replyid
+    data['replyid'] = notif.replyid.id
 
     return Response(data = data) 
 

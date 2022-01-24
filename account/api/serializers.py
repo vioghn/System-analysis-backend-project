@@ -25,7 +25,8 @@ class UserSerializerothers(serializers.ModelSerializer):
 	class Meta:
 		model = Account
 		
-		fields  = ['pk', 'image',  'firstname', 'lastname','username' , 'bio']
+		fields  = ['pk', 'image',  'firstname', 'lastname','username' , 'bio' , 'province' ,
+		 'gender' , 'phone_number' , 'date_birth' , 'isstory' , 'issocial' , 'ishistoric' , 'isarty' , 'ispsychology' , 'isscientific']
 
 
 	def validate(self, user):

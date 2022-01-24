@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BookSearch, FilterCategory, BookListView, RateCreateAPIView
+from .views import BookSearch, FilterCategory, BookListView, RateCreateAPIView, notifListView
 from . import views
 
 urlpatterns = [
@@ -14,9 +14,17 @@ urlpatterns = [
     path('comments/<int:pk>/', views.CommentDetail.as_view(), name = "comment-detail"),
     path('rate/create/', views.RateCreateAPIView.as_view(), name="RateCreate"),
     path('favourite/create/', views.Favouritecc, name="Favouritecc"),
-
-
+    path('replycomment/' , views.ReplyList.as_view(), name="reply"),
+    path('replycomment/<int:pk>/', views.ReplyDetail.as_view(), name = "reply-detail"),
+    path('notif/list/', views.notifListView.as_view(), name ="notification"),
+    path('notif/unreed/', views.notifunreadListView.as_view(), name ="notification"),
+    path('notifdetail/', views.notifdetail, name ="notification"),
+    path('notifseen/', views.seennotif, name ="notification"),
+    path('read/create/', views.read, name="ReadCreateAPIView"),
+    path('saved/create/', views.savebook, name="savedCreateAPIView"),  
 ]
+
+
 
 
 

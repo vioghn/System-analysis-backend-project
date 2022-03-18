@@ -1,3 +1,4 @@
+from operator import truediv
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from rest_framework.authtoken.models import Token
@@ -59,11 +60,11 @@ class Account(AbstractBaseUser):
 	is_staff				= models.BooleanField(default=False)
 	is_writer				= models.BooleanField(default=False)
 	is_superuser			= models.BooleanField(default=False)
-	firstname 				= models.CharField(max_length=40 , default = '')
-	lastname 				= models.CharField(max_length=40 , default = '')
-	bio						= models.CharField(max_length=100, default = '')
+	firstname 				= models.CharField(max_length=40 , default = '' , null = True)
+	lastname 				= models.CharField(max_length=40 , default = '' , null = True)
+	bio						= models.CharField(max_length=100, default = '' , null = True)
 	phone					= PhoneNumberField(null=True, blank= True)
-	isstory					= models.BooleanField(default=False)
+	isstory					= models.BooleanField(default=False) 
 	issocial				= models.BooleanField(default=False)
 	ispsychology			= models.BooleanField(default=False)
 	ishistoric				= models.BooleanField(default=False)

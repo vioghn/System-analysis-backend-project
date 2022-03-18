@@ -23,7 +23,8 @@ urlpatterns = [
 	path('properties/update/', views.update_account_view, name="update"),
 	path('propertiesothers/', views.User_APIo, name="propertiesothers"),
 	path('verification/' , views.verification, name="verification"),
-	path('DeleteAccount/', views.DeleteAccount.as_view(),name="DeleteAccount" )
+	path('DeleteAccount/', views.DeleteAccount.as_view(),name="DeleteAccount" ), 
+	
 ]
 
 

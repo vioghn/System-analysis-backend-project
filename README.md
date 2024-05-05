@@ -1,1 +1,2 @@
-# goodreads/backend
+
+This application is a python backend project for the System Analysis and Design course that aims to create a social networking platform tailored to book enthusiasts. The platform will allow users to discover, share, and discuss their favorite books, fostering a vibrant community of readers. Users will have the ability to create profiles, add books to their reading lists, write reviews, recommend books to others, and engage in discussions through comments and replies. The backend will handle user authentication, data storage, and interactions between users and books. this project seeks to connect readers and facilitate meaningful conversations about literature. All codes are available on the "version4" branch
